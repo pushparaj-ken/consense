@@ -9,6 +9,14 @@ import { generateSwagger, serveSwagger } from './swagger/swagger';
 import userRoutes from "./routes/user/user.routes";
 import vehicleRoutes from "./routes/user/vehicle.routes";
 
+import roleRoutes from "./routes/admin/role.routes";
+import adminRoutes from "./routes/admin/admin.routes";
+import customersRoutes from "./routes/admin/customers.routes";
+import driverRoutes from "./routes/admin/driver.routes";
+import vehicleAdminRoutes from "./routes/admin/vehicle.routes";
+import locationRoutes from "./routes/admin/location.routes";
+
+
 const app = express();
 
 const routes = ['./swagger/user/*.ts'];
@@ -16,6 +24,12 @@ const routes = ['./swagger/user/*.ts'];
 const swaggerSpec = generateSwagger('CONSENSE', '1.0.0', routes);
 
 serveSwagger(app, swaggerSpec, '/api/user/docs');
+
+const routes2 = ['./swagger/admin/*.ts'];
+
+const swaggerSpec2 = generateSwagger('CONSENSE ADMIN', '1.0.0', routes2);
+
+serveSwagger(app, swaggerSpec2, '/api/admin/docs');
 
 app.use(cors({
   origin: ['http://localhost:4000',]
@@ -30,9 +44,17 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'pug');
 
-
+// Users routes
 app.use('/api/users', userRoutes);
 app.use('/api/users/vehicle', vehicleRoutes);
+
+// Admin Routes
+app.use('/api/admin/roles', roleRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/admin/customers', customersRoutes);
+app.use('/api/admin/driver', driverRoutes);
+app.use('/api/admin/vehicle', vehicleAdminRoutes);
+app.use('/api/admin/location', locationRoutes);
 
 app.use(function (req: any, res: any, next: any) {
   res.status(404);
