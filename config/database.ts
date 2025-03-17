@@ -5,7 +5,7 @@ import { config } from "./constants";
 export const AppDataSource = new DataSource({
   type: "mssql",
   host: config.DB_HOST,
-  port: parseInt(process.env.DB_PORT || "1433"),
+  port: parseInt(config.DB_PORT || "1433"),
   username: config.DB_USERNAME,
   password: config.DB_PASSWORD,
   database: config.DB_DATABASE,

@@ -342,4 +342,18 @@ export const driverService = {
       throw new Error(`Error in sending email or updating customer ${error.message}`);
     }
   },
+
+  async updatePassword(id: number, data: any) {
+    try {
+      const user = await driverRepository.findOneBy({ DRIVER_ID: id });
+      if (!user) {
+        throw new Error('User Not Found')
+      }
+      const hashedPassword = await bcrypt.hash(data.password, 10);
+      user.DRIVER_PASSWORD = hashedPassword;
+      await driverRepository.update(id, user);
+    } catch (error: any) {
+      throw new Error(`Error in sending email or updating customer ${error.message}`);
+    }
+  }
 };
