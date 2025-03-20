@@ -39,7 +39,7 @@ const swaggerSpec2 = generateSwagger('CONSENSE ADMIN', '1.0.0', routes2);
 serveSwagger(app, swaggerSpec2, '/api/admin/docs');
 
 
-const routesFleet = ['./swagger/fleet/*.js'];
+const routesFleet = ['./swagger/fleet/*.ts'];
 
 const swaggerSpecFleet = generateSwagger('CONSENSE FLEET', '1.0.0', routesFleet);
 
