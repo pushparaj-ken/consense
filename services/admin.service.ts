@@ -54,6 +54,29 @@ export const adminService = {
     }
   },
 
+  async getUsers(limit: number, offset: number, query: any) {
+    const [user, totalItems] = await userRepository.findAndCount({
+      where: query,
+      skip: offset,
+      take: limit,
+    });
+
+    return { user, totalItems };
+  },
+
+  async getUserById(USER_ID: number) {
+    return await userRepository.findOneBy({ USER_ID });
+  },
+
+  async updateUser(USER_ID: number, data: Partial<User>) {
+    await userRepository.update(USER_ID, data);
+    return await userRepository.findOneBy({ USER_ID });
+  },
+
+  async deleteUser(id: number) {
+    return await userRepository.delete(id);
+  },
+
   async loginUser(data: Partial<User>, RoleData: any) {
     if (!data.USER_EMAIL || !data.USER_PASSWORD) {
       throw new Error("Email and Password are required");

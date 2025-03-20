@@ -49,6 +49,25 @@
  *         ROLE_ID:
  *           type: number
  *           example: 1
+ *     AdminUpdateBody:
+ *       type: object
+ *       required:
+ *         - USER_FIRSTNAME
+ *         - USER_LASTNAME 
+ *         - USER_PHONENO
+ *       properties:
+ *         USER_FIRSTNAME:
+ *           type: string
+ *           example: smaple Name
+ *         USER_LASTNAME:
+ *           type: string
+ *           example: smaple Name
+ *         USER_PASSWORD:
+ *           type: string
+ *           example: 123456
+ *         USER_PHONENO:
+ *           type: number
+ *           example: 9876543210
  *     AdminResponse:
  *       type: object
  *       properties:
@@ -188,6 +207,107 @@
  *             properties:
  *               refreshToken:
  *                 type: string
+ *     responses:
+ *       200:
+ *         description: Success
+ */
+
+/**
+ * @swagger
+ * /api/admin/{id}:
+ *   get:
+ *     summary: Get a Admin by ID
+ *     tags: [Admin]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The Admin ID.
+ *     responses:
+ *       200:
+ *         description: Role data.
+ */
+
+/**
+ * @swagger
+ * /api/admin/update{id}:
+ *   put:
+ *     summary: Update Admin
+ *     tags: [Admin]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Admin ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/AdminUpdateBody'
+ *     responses:
+ *       200:
+ *         description: Success
+ */
+/**
+ * @swagger
+ * /api/admin/delete/{id}:
+ *   delete:
+ *     summary: Delete Admin
+ *     tags: [Admin]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: User ID
+ *     responses:
+ *       200:
+ *         description: Success
+ */
+
+/**
+ * @swagger
+ * /api/admin/list:
+ *   get:
+ *     summary: List Admin
+ *     tags: [Admin]
+ *     parameters:
+ *       - in: query
+ *         name: USER_ID
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: Filter By user
+ *       - in: query
+ *         name: USER_EMAIL
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: Filter By EMail
+ *       - in: query
+ *         name: USER_PHONENO
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: Filter By phone
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: number
+ *         required: false
+ *         description: No of records
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: number
+ *         required: false
+ *         description: page no
  *     responses:
  *       200:
  *         description: Success
