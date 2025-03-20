@@ -30,7 +30,6 @@ export const adminController = {
   }),
 
   Dashboard: asyncHandler(async (req: CustomRequest) => {
-    console.log("🚀 ~ Dashboard:asyncHandler ~ req:", req.admin)
     const totalCustomer = await customerRepository.count()
     const totalDriver = await driverRepository.count()
     return {
