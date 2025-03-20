@@ -45,7 +45,7 @@ const swaggerSpecFleet = generateSwagger('CONSENSE FLEET', '1.0.0', routesFleet)
 serveSwagger(app, swaggerSpecFleet, '/api/fleet/docs');
 
 app.use(cors({
-  origin: ['http://localhost:4000',]
+  origin: ['http://localhost:4000', 'https://consense.smcmtechnologies.com', 'http://consense.smcmtechnologies.com']
 }));
 
 app.use(express.json());
