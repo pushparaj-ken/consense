@@ -84,10 +84,10 @@
  *       properties:
  *         DRIVER_FIRSTNAME:
  *           type: string
- *           example: smaple Name
+ *           example: Vor Name
  *         DRIVER_LASTNAME:
  *           type: string
- *           example: zugehorigesUnternehmen
+ *           example: nach Name
  *         DRIVER_ADDRESS1:
  *           type: string
  *           example: StraBeundHausnummer
@@ -97,7 +97,7 @@
  *         DRIVER_ADDRESS3:
  *           type: string
  *           example: Kennzeichen
- *         DRIVER_ADDRESS4:
+ *         DRIVER_COUNTRYCODE:
  *           type: string
  *           example: "+91"
  *         DRIVER_EMAIL:
