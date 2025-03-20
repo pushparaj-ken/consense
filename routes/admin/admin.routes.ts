@@ -12,4 +12,10 @@ router.get("/dashboard", authenticateAdmin, adminController.Dashboard);
 
 router.put('/updatepassword', authenticateAdmin, adminController.UpdatePassword)
 
+router.get('/sync-customers', authenticateAdmin, adminController.SyncCustomers)
+
+router.get('/sync-drivers', authenticateAdmin, adminController.SyncDrivers)
+
+router.post('/refresh-token', adminController.refreshTokenDriver)
+
 export default router;

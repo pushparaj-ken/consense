@@ -105,3 +105,38 @@ export class VehicleDetail {
   @Column({ name: 'VEHICLEDETAIL_MODIFIEDON', type: 'datetime', nullable: true })
   VEHICLEDETAIL_MODIFIEDON?: Date;
 }
+
+
+Entity('CFCM_VEHICLERETURNDETAIL')
+export class VehicleReturnDetail {
+
+  @PrimaryGeneratedColumn({ name: 'VEHICLERETURNDETAIL_ID' })
+  VEHICLERETURNDETAIL_ID: number;
+
+  @Column({ name: 'VEHICLERETURNDETAIL_VEHICLEID', type: 'int' })
+  VEHICLERETURNDETAIL_VEHICLEID: number;
+
+  @Column({ name: 'VEHICLERETURNDETAIL_MILEAGE', type: 'varchar', length: 255, nullable: true })
+  VEHICLERETURNDETAIL_MILEAGE?: string;
+
+  @Column({ name: 'VEHICLERETURNDETAIL_RETURNLOCATION', type: 'varchar', length: 255, nullable: true })
+  VEHICLERETURNDETAIL_RETURNLOCATION?: string;
+
+  @Column({ name: 'VEHICLERETURNDETAIL_ANYDAMAGE', type: 'varchar', length: 255, nullable: true })
+  VEHICLERETURNDETAIL_ANYDAMAGE?: string;
+
+  @Column({ name: 'VEHICLERETURNDETAIL_STATUS', type: 'int', default: 0 })
+  VEHICLERETURNDETAIL_STATUS: number;
+
+  @Column({ name: 'VEHICLERETURNDETAIL_CREATEDBY', type: 'int', nullable: true })
+  VEHICLERETURNDETAIL_CREATEDBY?: number;
+
+  @Column({ name: 'VEHICLERETURNDETAIL_CREATEDON', type: 'datetime', nullable: true })
+  VEHICLERETURNDETAIL_CREATEDON?: Date;
+
+  @Column({ name: 'VEHICLERETURNDETAIL_MODIFIEDBY', type: 'int', nullable: true })
+  VEHICLERETURNDETAIL_MODIFIEDBY?: number;
+
+  @Column({ name: 'VEHICLERETURNDETAIL_MODIFIEDON', type: 'datetime', nullable: true })
+  VEHICLERETURNDETAIL_MODIFIEDON?: Date;
+}

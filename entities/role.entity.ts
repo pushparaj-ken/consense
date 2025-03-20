@@ -31,3 +31,9 @@ export class Role {
   @OneToMany(() => Permission, (permission) => permission.ROLE)
   PERMISSION: Permission[];
 }
+
+export interface AssignRoleData {
+  DRIVER_ID: number;
+  ROLE_ID: number;
+  DRIVER_USERID: number;
+}

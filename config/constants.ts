@@ -20,6 +20,11 @@ interface EnvVars {
   JWT_SECRET_DRIVER: string;
   JWT_EXPIRE: string;
   PASSWORD_RESET_LINK: string;
+  DEST_DB_HOST: string;
+  DEST_DB_PORT: string;
+  DEST_DB_USERNAME: string;
+  DEST_DB_PASSWORD: string;
+  DEST_DB_DATABASE: string;
 }
 
 const envVarSchema = Joi.object<EnvVars>({
@@ -35,6 +40,11 @@ const envVarSchema = Joi.object<EnvVars>({
   JWT_SECRET_DRIVER: Joi.string().required().description('secret key Driver used to sign in'),
   JWT_EXPIRE: Joi.number().required().description('milliseconds after which the session expires'),
   PASSWORD_RESET_LINK: Joi.string().required().description('Reset Password Link'),
+  DEST_DB_HOST: Joi.string().required().description('Destination  hostname of the MSSQL the server connects to'),
+  DEST_DB_PORT: Joi.string().required().description('Destination  The port number of MYSQL the server connects to'),
+  DEST_DB_USERNAME: Joi.string().required().description('Destination Database Username'),
+  DEST_DB_PASSWORD: Joi.string().required().description('Destination Database Password'),
+  DEST_DB_DATABASE: Joi.string().required().description('Destination Database Name'),
 }).unknown();
 
 const { value: envVar, error } = envVarSchema.prefs({ errors: { label: 'key' } }).validate(process.env);
@@ -56,4 +66,9 @@ export const config: EnvVars = {
   JWT_SECRET_DRIVER: envVar.JWT_SECRET_DRIVER,
   JWT_EXPIRE: envVar.JWT_EXPIRE,
   PASSWORD_RESET_LINK: envVar.PASSWORD_RESET_LINK,
+  DEST_DB_HOST: envVar.DEST_DB_HOST,
+  DEST_DB_PORT: envVar.DEST_DB_PORT,
+  DEST_DB_USERNAME: envVar.DEST_DB_USERNAME,
+  DEST_DB_PASSWORD: envVar.DEST_DB_PASSWORD,
+  DEST_DB_DATABASE: envVar.DEST_DB_DATABASE,
 };

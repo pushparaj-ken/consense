@@ -6,7 +6,7 @@ import { CustomRequest } from '../../libs/custom-request';
 export const driverController = {
   Login: asyncHandler(async (req: Request, res: Response) => {
     const value = req.body;
-    const role = ["DRIVER", "driver", "Driver"];
+    const role = ["FLEET", "fleet", "Fleet"];
     const response = await driverService.loginDriver(value, role);
     res.set('Authentication', response.Token);
     return response.data
@@ -14,7 +14,7 @@ export const driverController = {
 
   Register: asyncHandler(async (req: Request, res: Response) => {
     const value = req.body;
-    const role = ["DRIVER", "driver", "Driver"];
+    const role = ["FLEET", "fleet", "Fleet"];
     const response = await driverService.registerDriver(value, role);
     res.set('Authentication', response.Token);
     return response.data

@@ -71,7 +71,7 @@ export const driverService = {
     return await driverRepository.update(id, data);
   },
 
-  async loginDriver(data: Partial<LoginDriverData>) {
+  async loginDriver(data: Partial<LoginDriverData>, RoleData: any) {
     if (!data.DRIVER_EMAIL || !data.DRIVER_PASSWORD || !data.CUSTOMER_CODE) {
       throw new Error("All Field are Mandatory");
     }
@@ -79,7 +79,7 @@ export const driverService = {
     if (!customer) {
       throw new Error("Customer Code not Exists");
     }
-    const driver = await driverRepository.findOneBy({ DRIVER_EMAIL: data.DRIVER_EMAIL })
+    const driver: any = await driverRepository.findOneBy({ DRIVER_EMAIL: data.DRIVER_EMAIL })
     if (!driver) {
       throw new Error("Driver not Found")
     }
@@ -96,77 +96,124 @@ export const driverService = {
     const { DRIVER_PASSWORD, ...userWithoutPassword } = driver;
 
     const userRoles = await userRoleRepository.find({
-      where: { USERROLE_USERID: driver.DRIVER_ID },
+      where: { USERROLE_USERID: driver.DRIVER_USERID },
       relations: ["ROLE"],
     });
     const roleNames = userRoles.map((role) => role.ROLE?.ROLES_NAME);
+    const roleExists = roleNames.some((role) =>
+      RoleData.includes(role?.toLowerCase())
+    );
+
+    if (!roleExists) {
+      throw new Error("Your account has not been approved for login. Please contact the administration for further assistance.");
+    }
     const tokenRecord = generateDriverToken(driver.DRIVER_ID, roleNames)
+    userWithoutPassword.DRIVER_ROLE = roleNames
     return {
       data: userWithoutPassword,
       Token: tokenRecord
     }
   },
 
-  async registerDriver(data: Partial<RegisterDriverData>) {
-    if (!data.DRIVER_EMAIL || !data.DRIVER_LASTNAME || !data.CUSTOMER_CODE || !data.DRIVER_LASTNAME) {
-      throw new Error("All Field are Mandatory");
+  async registerDriver(data: Partial<RegisterDriverData>, RoleData: string[]) {
+    if (!data.DRIVER_EMAIL || !data.DRIVER_LASTNAME || !data.CUSTOMER_CODE) {
+      throw new Error("All fields are mandatory");
     }
 
-    const driver = await driverRepository.findOneBy({ DRIVER_EMAIL: data.DRIVER_EMAIL })
-    if (driver) {
-      throw new Error("Email already exists")
+    let existingDriver: any = await driverRepository.findOneBy({
+      DRIVER_EMAIL: data.DRIVER_EMAIL,
+    });
+    const hashedPassword = data.DRIVER_PASSWORD ? await bcrypt.hash(data.DRIVER_PASSWORD, 10) : '';
+    let user = await userRepository.findOneBy({
+      USER_EMAIL: data.DRIVER_EMAIL,
+    });
+
+    const userRoles = user
+      ? await userRoleRepository.find({
+        where: { USERROLE_USERID: user.USER_ID },
+        relations: ["ROLE"],
+      })
+      : [];
+
+    const existingRoleNames = userRoles
+      .map((role) => role.ROLE?.ROLES_NAME?.toLowerCase())
+      .filter(Boolean);
+
+    const duplicateRole = RoleData.some((role) =>
+      existingRoleNames.includes(role.toLowerCase())
+    );
+
+    if (duplicateRole) {
+      throw new Error("Email ID already exists with the same role");
     }
 
-    const customer = await customerRepository.findOneBy({ CUSTOMER_CODE: data.CUSTOMER_CODE })
+    const customer = await customerRepository.findOneBy({
+      CUSTOMER_CODE: data.CUSTOMER_CODE,
+    });
+
     if (!customer) {
-      throw new Error("Customer Code not Exists");
+      throw new Error("Customer Code does not exist");
     }
 
     try {
       return await AppDataSource.transaction(async (manager) => {
-        const userData = {
-          USER_USERNAME: data.DRIVER_EMAIL,
-          USER_EMAIL: data.DRIVER_EMAIL,
-          USER_FIRSTNAME: data.DRIVER_FIRSTNAME,
-          USER_LASTNAME: data.DRIVER_LASTNAME,
+        if (!user) {
+          const userData = {
+            USER_USERNAME: data.DRIVER_EMAIL,
+            USER_EMAIL: data.DRIVER_EMAIL,
+            USER_FIRSTNAME: data.DRIVER_FIRSTNAME,
+            USER_LASTNAME: data.DRIVER_LASTNAME,
+            USER_PASSWORD: hashedPassword,
+          };
+          user = await manager.save(User, userData);
         }
-        let user = await manager.save(User, userData);
-        const role = await roleRepository.findOneBy({
-          ROLES_NAME: In(["DRIVER", "driver", "Driver"]),
-        });
-        if (!role) {
-          throw new Error("Role Not Found")
-        }
-        const userRole = manager.create(UserRole, {
-          USERROLE_USERID: user.USER_ID,
-          USERROLE_ROLEID: role.ROLES_ID
-        });
-        await manager.save(UserRole, userRole);
 
-        const userRoles = await manager.find(UserRole, {
+        if (!duplicateRole) {
+          const role = await roleRepository.findOneBy({
+            ROLES_NAME: In(RoleData),
+          });
+          if (!role) {
+            throw new Error(`Role  not found`);
+          }
+
+          const userRole = manager.create(UserRole, {
+            USERROLE_USERID: user.USER_ID,
+            USERROLE_ROLEID: role.ROLES_ID,
+          });
+          await manager.save(UserRole, userRole);
+        }
+
+
+        const updatedUserRoles = await manager.find(UserRole, {
           where: { USERROLE_USERID: user.USER_ID },
           relations: ["ROLE"],
         });
 
-        const roleNames = userRoles.map((role) => role.ROLE?.ROLES_NAME);
-
-        const DriverData = {
-          DRIVER_FIRSTNAME: data.DRIVER_FIRSTNAME,
-          DRIVER_LASTNAME: data.DRIVER_LASTNAME,
-          DRIVER_EMAIL: data.DRIVER_EMAIL,
-          DRIVER_USERID: user.USER_ID,
-          DRIVER_CUSTOMERID: { CUSTOMER_ID: customer.CUSTOMER_ID }
+        const roleNames = updatedUserRoles.map((role) => role.ROLE?.ROLES_NAME);
+        if (!existingDriver) {
+          const DriverData = {
+            DRIVER_FIRSTNAME: data.DRIVER_FIRSTNAME,
+            DRIVER_LASTNAME: data.DRIVER_LASTNAME,
+            DRIVER_EMAIL: data.DRIVER_EMAIL,
+            DRIVER_USERID: user.USER_ID,
+            DRIVER_CUSTOMERID: { CUSTOMER_ID: customer.CUSTOMER_ID },
+            DRIVER_PASSWORD: hashedPassword,
+          };
+          existingDriver = await driverRepository.save(DriverData);
         }
-        const driverRecord = await driverRepository.save(DriverData);
-        const tokenRecord = generateDriverToken(driverRecord.DRIVER_ID, roleNames)
 
+        const tokenRecord = generateDriverToken(
+          existingDriver?.DRIVER_ID,
+          roleNames
+        );
+        existingDriver.DRIVER_ROLE = roleNames
         return {
-          data: driverRecord,
-          Token: tokenRecord
-        }
-      })
+          data: existingDriver,
+          Token: tokenRecord,
+        };
+      });
     } catch (error: any) {
-      console.log("🚀 ~ createUser ~ error:", error)
+      console.error("🚀 ~ registerDriver ~ error:", error);
       throw new Error(error.message);
     }
   },

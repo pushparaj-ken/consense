@@ -16,3 +16,19 @@ export const AppDataSource = new DataSource({
     trustServerCertificate: true,
   },
 });
+
+
+export const DestDataSource = new DataSource({
+  type: "mssql",
+  host: config.DEST_DB_HOST,
+  port: parseInt(config.DEST_DB_PORT || "1433"),
+  username: config.DEST_DB_USERNAME,
+  password: config.DEST_DB_PASSWORD,
+  database: config.DEST_DB_DATABASE,
+  entities: [__dirname + '/../schedulers/entity-dest/*.entity.{ts,js}'],
+  synchronize: false,
+  options: {
+    encrypt: false,
+    trustServerCertificate: true,
+  },
+});

@@ -1,6 +1,7 @@
 import { roleRepository } from "../repositories/role.repository";
-import { Role } from '../entities/role.entity';
+import { AssignRoleData, Role } from '../entities/role.entity';
 import { DBService } from "../services/db.service";
+import { userRoleRepository } from '../repositories/user-role.repository';
 
 export const roleService = {
 
@@ -50,5 +51,20 @@ export const roleService = {
     //   UserId_i: 0
     // }
     // return await DBService.saveChangesAsync('InsertUpdateDelete_prc', record);
+  },
+
+  async assignRole(data: Partial<AssignRoleData>) {
+    const userRoles = await userRoleRepository.find({
+      where: { USERROLE_USERID: data.DRIVER_USERID, USERROLE_ROLEID: data.ROLE_ID },
+      relations: ["ROLE"],
+    });
+    if (userRoles.length > 0) {
+      throw new Error("User Role Already Assigned");
+    }
+    const createData = {
+      USERROLE_USERID: data.DRIVER_USERID,
+      USERROLE_ROLEID: data.ROLE_ID
+    }
+    return await userRoleRepository.save(createData);
   },
 };

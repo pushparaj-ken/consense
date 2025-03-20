@@ -12,6 +12,9 @@ export class Customer {
   @PrimaryGeneratedColumn({ name: "CUSTOMER_ID" })
   CUSTOMER_ID: number;
 
+  @Column({ name: "CUSTOMER_DUPICATEID", default: 0 })
+  CUSTOMER_DUPICATEID: number;
+
   @Column({ name: "CUSTOMER_USERID" })
   CUSTOMER_USERID: number;
 

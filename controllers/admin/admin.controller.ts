@@ -6,6 +6,7 @@ import { userService } from '../../services/user.service';
 import { CustomRequest } from '../../libs/custom-request';
 import { customerRepository } from '../../repositories/customer.repository';
 import { driverRepository } from '../../repositories/driver.repository';
+import { startSchedulers } from "../../schedulers/schedulers";
 
 export const adminController = {
 
@@ -24,7 +25,8 @@ export const adminController = {
 
   Login: asyncHandler(async (req: Request) => {
     const value = req.body;
-    return await adminService.loginUser(value);
+    const role = ["ADMIN", "admin", "Admin"];
+    return await adminService.loginUser(value, role);
   }),
 
   Dashboard: asyncHandler(async (req: CustomRequest) => {
@@ -43,5 +45,18 @@ export const adminController = {
       throw new Error("Passwords do not match");
     }
     return await adminService.updatePassword(admin.USER_ID, value);
+  }),
+
+  SyncCustomers: asyncHandler(async (req: CustomRequest) => {
+    return await adminService.transferCustomerData();
+  }),
+
+  SyncDrivers: asyncHandler(async (req: CustomRequest) => {
+    return await adminService.transferDriverData();
+  }),
+
+  refreshTokenDriver: asyncHandler(async (req: CustomRequest) => {
+    const value = req.body;
+    return await adminService.refreshTokenDriver(value);
   }),
 };
