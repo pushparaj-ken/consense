@@ -28,6 +28,9 @@ export class Driver {
   @Column({ name: "DRIVER_LASTNAME" })
   DRIVER_LASTNAME: string;
 
+  @Column({ name: "DRIVER_COMPANYNAME" })
+  DRIVER_COMPANYNAME: string;
+
   @Column({ name: "DRIVER_EMAIL" })
   DRIVER_EMAIL: string;
 
@@ -97,7 +100,7 @@ export interface LoginDriverData {
 export interface RegisterDriverData {
   DRIVER_EMAIL: string;
   DRIVER_FIRSTNAME: string;
-  DRIVER_LASTNAME: string;
+  DRIVER_COMPANYNAME: string;
   CUSTOMER_CODE: number;
   DRIVER_USERID?: number;
   DRIVER_CUSTOMERID?: number;

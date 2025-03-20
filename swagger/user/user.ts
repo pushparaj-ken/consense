@@ -45,14 +45,14 @@
  *       type: object
  *       required:
  *         - DRIVER_FIRSTNAME
- *         - DRIVER_LASTNAME 
+ *         - DRIVER_COMPANYNAME 
  *         - DRIVER_EMAIL
  *         - CUSTOMER_CODE
  *       properties:
  *         DRIVER_FIRSTNAME:
  *           type: string
  *           example: smaple Name
- *         DRIVER_LASTNAME:
+ *         DRIVER_COMPANYNAME:
  *           type: string
  *           example: company Name
  *         DRIVER_EMAIL:
@@ -73,7 +73,7 @@
  *       type: object
  *       required:
  *         - DRIVER_FIRSTNAME
- *         - DRIVER_LASTNAME
+ *         - DRIVER_COMPANYNAME
  *         - DRIVER_ADDRESS1
  *         - DRIVER_ADDRESS2
  *         - DRIVER_ADDRESS3
@@ -85,7 +85,7 @@
  *         DRIVER_FIRSTNAME:
  *           type: string
  *           example: Vor Name
- *         DRIVER_LASTNAME:
+ *         DRIVER_COMPANYNAME:
  *           type: string
  *           example: nach Name
  *         DRIVER_ADDRESS1:

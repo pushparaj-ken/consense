@@ -24,7 +24,7 @@ export const driverService = {
           USER_EMAIL: data.DRIVER_EMAIL,
           USER_FIRSTNAME: data.DRIVER_FIRSTNAME,
           USER_PASSWORD: data.DRIVER_PASSWORD,
-          USER_LASTNAME: data.DRIVER_LASTNAME,
+          USER_LASTNAME: data.DRIVER_COMPANYNAME,
           USER_CREATEDBY: data.DRIVER_CREATEDBY,
           USER_CREATEDON: data.DRIVER_CREATEDON
         }
@@ -116,7 +116,7 @@ export const driverService = {
   },
 
   async registerDriver(data: Partial<RegisterDriverData>, RoleData: string[]) {
-    if (!data.DRIVER_EMAIL || !data.DRIVER_LASTNAME || !data.CUSTOMER_CODE) {
+    if (!data.DRIVER_EMAIL || !data.DRIVER_COMPANYNAME || !data.CUSTOMER_CODE) {
       throw new Error("All fields are mandatory");
     }
 
@@ -162,7 +162,7 @@ export const driverService = {
             USER_USERNAME: data.DRIVER_EMAIL,
             USER_EMAIL: data.DRIVER_EMAIL,
             USER_FIRSTNAME: data.DRIVER_FIRSTNAME,
-            USER_LASTNAME: data.DRIVER_LASTNAME,
+            USER_LASTNAME: data.DRIVER_COMPANYNAME,
             USER_PASSWORD: hashedPassword,
           };
           user = await manager.save(User, userData);
@@ -193,7 +193,7 @@ export const driverService = {
         if (!existingDriver) {
           const DriverData = {
             DRIVER_FIRSTNAME: data.DRIVER_FIRSTNAME,
-            DRIVER_LASTNAME: data.DRIVER_LASTNAME,
+            DRIVER_COMPANYNAME: data.DRIVER_COMPANYNAME,
             DRIVER_EMAIL: data.DRIVER_EMAIL,
             DRIVER_USERID: user.USER_ID,
             DRIVER_CUSTOMERID: { CUSTOMER_ID: customer.CUSTOMER_ID },
