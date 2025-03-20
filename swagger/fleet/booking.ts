@@ -209,30 +209,16 @@
  *         name: startDate
  *         schema:
  *           type: string
- *           example: 2024-07-16
+ *           example: 2024-07-16 10:00:00
  *         required: false
  *         description: Filter Booking by startDate
- *       - in: query
- *         name: startTime
- *         schema:
- *           type: string
- *           example: 10:00:00
- *         required: false
- *         description: Filter Booking by startTime
  *       - in: query
  *         name: endDate
  *         schema:
  *           type: string
- *           example: 2024-07-18
+ *           example: 2024-07-18 10:00:00
  *         required: false
  *         description: Filter Booking by endDate
- *       - in: query
- *         name: endTime
- *         schema:
- *           type: string
- *           example: 10:00:00
- *         required: false
- *         description: Filter Booking by endTime
  *       - in: query
  *         name: limit
  *         schema:
