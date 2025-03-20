@@ -63,7 +63,7 @@
 
 /**
  * @swagger
- * /api/admin/driver/{id}:
+ * /api/admin/driver/update/{id}:
  *   put:
  *     summary: Update Driver
  *     tags: [Driver]

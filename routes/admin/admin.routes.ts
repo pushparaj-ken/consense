@@ -10,13 +10,15 @@ router.post("/login", adminController.Login);
 
 router.get('/list', authenticateAdmin, adminController.getUsers)
 
-router.get("/:id", authenticateAdmin, adminController.getUserById);
+router.get("/get/:id", authenticateAdmin, adminController.getUserById);
 
 router.put('/update/:id', authenticateAdmin, adminController.updateUser)
 
 router.delete('/delete/:id', authenticateAdmin, adminController.deleteUser)
 
 router.get("/dashboard", authenticateAdmin, adminController.Dashboard);
+
+router.get('/damagelist', authenticateAdmin, adminController.DamageList)
 
 router.put('/updatepassword', authenticateAdmin, adminController.UpdatePassword)
 

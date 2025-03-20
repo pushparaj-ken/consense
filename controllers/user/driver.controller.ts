@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { driverService } from "../../services/driver.service";
 import { asyncHandler } from '../../utils/async-handler';
 import { CustomRequest } from '../../libs/custom-request';
+import { upload } from '../../libs/image'
 
 export const driverController = {
   Login: asyncHandler(async (req: Request, res: Response) => {
@@ -60,7 +61,7 @@ export const driverController = {
 
   ResetPassword: asyncHandler(async (req: CustomRequest) => {
     const updateData = {
-      token: req.params.token,
+      token: req.body.token,
       DRIVER_PASSWORD: req.body.password
     }
     return await driverService.resetPasswordDriver(updateData);
@@ -85,5 +86,47 @@ export const driverController = {
   refreshTokenDriver: asyncHandler(async (req: CustomRequest) => {
     const value = req.body;
     return await driverService.refreshTokenDriver(value);
+  }),
+
+  imageUpload: asyncHandler(async (req: CustomRequest) => {
+    const files: any = req.files;
+    if (files.image == '' && files.image == null && files.image == undefined) {
+      throw new Error("All Fields are Mandatory");
+    }
+    let image_new = "";
+    if (files.image) {
+      const { buffer, originalname } = files.image[0];
+      let image = await upload(buffer, originalname, "common_image");
+      image_new = image.Location;
+    } else {
+      image_new = image_new;
+    }
+    return image_new;
+  }),
+
+  multiplImageUpload: asyncHandler(async (req: CustomRequest) => {
+    const files: any = req.files;
+    if (files.images == '' && files.images == null && files.images == undefined) {
+      throw new Error("All Fields are Mandatory");
+    }
+    let image_new = [];
+    if (files.images) {
+      for (let each of files.images) {
+        const { buffer, originalname } = each;
+        let image = await upload(buffer, originalname, "common_image");
+        image_new.push(image.Location);
+      }
+    } else {
+      image_new = [];
+    }
+    return image_new;
+  }),
+
+  viewResetPassword: asyncHandler(async (req: CustomRequest, res: Response) => {
+    var action = 'Reset Password';
+    res.set('content-type', 'text/html; charset=mycharset');
+    let data: any = {}; let resetPassword = {}; let errorData = {};
+    data.token = req.params.id
+    res.render('reset-password', { page_title: "Consense - Reset Password", data: data, resetPassword: resetPassword, action: action });
   }),
 };

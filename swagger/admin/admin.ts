@@ -160,11 +160,11 @@
  *         required: false
  *         description: Filter by damageNo
  *       - in: query
- *         name: userId
+ *         name: driverId
  *         schema:
  *           type: number
  *         required: false
- *         description: Filter by userId
+ *         description: Filter by driverId
  *     responses:
  *       200:
  *         description: Success
@@ -214,7 +214,7 @@
 
 /**
  * @swagger
- * /api/admin/{id}:
+ * /api/admin/get/{id}:
  *   get:
  *     summary: Get a Admin by ID
  *     tags: [Admin]
@@ -232,7 +232,7 @@
 
 /**
  * @swagger
- * /api/admin/update{id}:
+ * /api/admin/update/{id}:
  *   put:
  *     summary: Update Admin
  *     tags: [Admin]

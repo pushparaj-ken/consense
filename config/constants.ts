@@ -25,6 +25,10 @@ interface EnvVars {
   DEST_DB_USERNAME: string;
   DEST_DB_PASSWORD: string;
   DEST_DB_DATABASE: string;
+  AWS_S3_ACCESS_KEY_ID: string;
+  AWS_S3_SECRET_ACCESS_KEY: string;
+  AWS_S3_REGION: string;
+  AWS_S3_BUCKET_NAME: string;
 }
 
 const envVarSchema = Joi.object<EnvVars>({
@@ -45,6 +49,10 @@ const envVarSchema = Joi.object<EnvVars>({
   DEST_DB_USERNAME: Joi.string().required().description('Destination Database Username'),
   DEST_DB_PASSWORD: Joi.string().required().description('Destination Database Password'),
   DEST_DB_DATABASE: Joi.string().required().description('Destination Database Name'),
+  AWS_S3_ACCESS_KEY_ID: Joi.string().required().description('Aws AccessKey'),
+  AWS_S3_SECRET_ACCESS_KEY: Joi.string().required().description('Aws SecretKey'),
+  AWS_S3_REGION: Joi.string().required().description('Aws Region'),
+  AWS_S3_BUCKET_NAME: Joi.string().required().description('Aws BucketName'),
 }).unknown();
 
 const { value: envVar, error } = envVarSchema.prefs({ errors: { label: 'key' } }).validate(process.env);
@@ -71,4 +79,8 @@ export const config: EnvVars = {
   DEST_DB_USERNAME: envVar.DEST_DB_USERNAME,
   DEST_DB_PASSWORD: envVar.DEST_DB_PASSWORD,
   DEST_DB_DATABASE: envVar.DEST_DB_DATABASE,
+  AWS_S3_ACCESS_KEY_ID: envVar.AWS_S3_ACCESS_KEY_ID,
+  AWS_S3_SECRET_ACCESS_KEY: envVar.AWS_S3_SECRET_ACCESS_KEY,
+  AWS_S3_REGION: envVar.AWS_S3_REGION,
+  AWS_S3_BUCKET_NAME: envVar.AWS_S3_BUCKET_NAME,
 };

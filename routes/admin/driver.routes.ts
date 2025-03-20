@@ -16,7 +16,7 @@ router.delete('/delete/:id', authenticateAdmin, driverController.deleteDriver)
 
 router.post('/sendemail', authenticateAdmin, driverController.SendEmail)
 
-router.put('/verifyemail', authenticateAdmin, driverController.VerifyEmail)
+router.post('/verifyemail', authenticateAdmin, driverController.VerifyEmail)
 
 router.put('/updatepassword', authenticateAdmin, driverController.UpdatePassword)
 

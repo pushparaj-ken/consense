@@ -26,7 +26,10 @@ const driverOptions: StrategyOptions = {
 
 passport.use("driver-login", new JwtStrategy(driverOptions, async (payload: JwtPayload, done: any) => {
   try {
-    let driver: any = await driverRepository.findOneBy({ DRIVER_ID: Number(payload.id) });
+    let driver: any = await driverRepository.findOne({
+      where: { DRIVER_ID: Number(payload.id) },
+      relations: ["DRIVER_CUSTOMERID"],
+    });
     if (driver) {
       driver.role = payload?.role;
       return done(null, driver);

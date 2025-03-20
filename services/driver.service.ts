@@ -53,6 +53,7 @@ export const driverService = {
       where: query,
       skip: offset,
       take: limit,
+      relations: ["DRIVER_CUSTOMERID"]
     });
 
     return { driver, totalItems };

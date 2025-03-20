@@ -9,6 +9,7 @@ import { generateSwagger, serveSwagger } from './swagger/swagger';
 // Users routes
 import userRoutes from "./routes/user/user.routes";
 import vehicleRoutes from "./routes/user/vehicle.routes";
+import claimRoutes from "./routes/user/claim.routes";
 
 // Admin Routes
 import roleRoutes from "./routes/admin/role.routes";
@@ -61,6 +62,7 @@ app.set('view engine', 'pug');
 // Users routes
 app.use('/api/users', userRoutes);
 app.use('/api/users/vehicle', vehicleRoutes);
+app.use('/api/users/damage', claimRoutes);
 
 // Admin Routes
 app.use('/api/admin/roles', roleRoutes);

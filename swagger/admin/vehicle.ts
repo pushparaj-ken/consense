@@ -49,16 +49,21 @@
  *           type: string
  *         VEHICLEDETAIL_LASTMAINTENANCEDATE:
  *           type: date
+ *           example: 2024-07-18 10:00:00
  *         VEHICLEDETAIL_NEXTMAINTENANCEDATE:
  *           type: date
+ *           example: 2024-07-18 10:00:00
  *         VEHICLEDETAIL_INSURANCEPOLICYNO:
  *           type: string
  *         VEHICLEDETAIL_INSURANCEEXPIARYDATE:
  *           type: date
+ *           example: 2024-07-18 10:00:00
  *         VEHICLEDETAIL_REGISTRATIONEXPIARYDATE:
  *           type: date
+ *           example: 2024-07-18 10:00:00
  *         VEHICLEDETAIL_INSECPTIONEXPIARYDATE:
  *           type: date
+ *           example: 2024-07-18 10:00:00
  *     AdminResponse:
  *       type: object
  *       properties:

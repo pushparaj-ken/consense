@@ -36,9 +36,13 @@
  *     UsersPasswordBody:
  *       type: object
  *       required:
- *         - DRIVER_PASSWORD  
+ *         - password  
+ *         - token  
  *       properties:
- *         DRIVER_PASSWORD:
+ *         password:
+ *           type: string
+ *           example: 123456
+ *         token:
  *           type: string
  *           example: 123456
  *     UsersRegisterBody:
@@ -194,16 +198,10 @@
 
 /**
  * @swagger
- * /api/users/resetPassword/{token}:
- *   put:
+ * /api/users/resetPassword:
+ *   post:
  *     summary: Update Password
  *     tags: [Users]
- *     parameters:
- *       - in: path
- *         name: token
- *         required: true
- *         schema:
- *           type: string
  *     requestBody:
  *       required: true
  *       content:
@@ -328,4 +326,48 @@
  *     responses:
  *       200:
  *         description: Success
+ */
+
+/**
+ * @swagger
+ * /api/users/imageupload:
+ *   post:
+ *     summary: Common Image Upload
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               image:
+ *                  type: string
+ *                  format: binary
+ *     responses:
+ *       200:
+ *         description: Data Saved Success
+ */
+
+/**
+ * @swagger
+ * /api/users/multipleupload:
+ *   post:
+ *     summary: Multiple Image Upload
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               images:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
+ *     responses:
+ *       200:
+ *         description: Data Saved Success
  */

@@ -11,6 +11,7 @@ import { startSchedulers } from "../../schedulers/schedulers";
 import { roleRepository } from '../../repositories/role.repository';
 import { In } from 'typeorm';
 import { userRepository } from '../../repositories/user.repository';
+import { claimRepository } from '../../repositories/claim.repository';
 
 export const adminController = {
 
@@ -130,6 +131,114 @@ export const adminController = {
       CustomerCount: totalCustomer,
       UserCount: totalUser
     };
+  }),
+
+  DamageList: asyncHandler(async (req: CustomRequest) => {
+    try {
+      const values = req.query;
+      let query = "";
+      if (values.damageNo) {
+        query = `AND c.CLAIM_NO = '${values.damageNo}'`;
+      }
+
+      if (values.driverId) {
+        query = `AND c.CLAIM_DRIVERID = '${values.driverId}'`;
+      }
+
+      const rawResult = await claimRepository.query(`
+          SELECT 
+            c.*, 
+            cpr.*, 
+            cpry.*, 
+            cpo.*, 
+            cprk.*, 
+            cd.*
+          FROM CFCM_CLAIM AS c 
+          LEFT JOIN CFCM_CLAIMPARTS AS cpr ON cpr.CLAIMPARTS_CLAIMID = c.CLAIM_ID 
+          LEFT JOIN CFCM_CLAIMPARTY AS cpry ON cpry.CLAIMPARTY_CLAIMID = c.CLAIM_ID 
+          LEFT JOIN CFCM_CLAIMPOLICE AS cpo ON cpo.CLAIMPOLICE_CLAIMID = c.CLAIM_ID 
+          LEFT JOIN CFCM_CLAIMPARKING AS cprk ON cprk.CLAIMPARKING_CLAIMID = c.CLAIM_ID 
+          LEFT JOIN CFCM_CLAIMDOCUMENT AS cd ON cd.CLAIMDOCUMENT_CLAIMID = c.CLAIM_ID
+          WHERE CLAIM_STATUS ='0' ${query}
+        `);
+      const claims: any = {};
+
+      rawResult.forEach((row: any) => {
+        const claimId = row.CLAIM_ID;
+
+        if (!claims[claimId]) {
+          claims[claimId] = {
+            CLAIM_ID: row.CLAIM_ID,
+            CLAIM_NO: row.CLAIM_NO,
+            CLAIM_TYPE: row.CLAIM_TYPE,
+            CLAIM_DATE: row.CLAIM_DATE,
+            parts: [],
+            parking: null,
+            police: null,
+            party: null,
+            documents: []
+          };
+        }
+
+        // Group parts
+        if (row.CLAIMPARTS_CLAIMID) {
+          claims[claimId].parts = {
+            CLAIMPARTS_CLAIMID: row.CLAIMPARTS_CLAIMID,
+            CLAIMPARTS_TIREFRONTLEFT: row.CLAIMPARTS_TIREFRONTLEFT,
+            CLAIMPARTS_BUMPERFRONTLEFT: row.CLAIMPARTS_BUMPERFRONTLEFT,
+            // Add other parts columns as needed
+          };
+        }
+
+        // Assign parking
+        if (row.CLAIMPARKING_CLAIMID && !claims[claimId].parking) {
+          claims[claimId].parking = {
+            CLAIMPARKING_ID: row.CLAIMPARKING_ID,
+            CLAIMPARKING_CLAIMID: row.CLAIMPARKING_CLAIMID,
+            CLAIMPOLICE_ADDRESS1: row.CLAIMPOLICE_ADDRESS1,
+            CLAIMPOLICE_ZIPCODE: row.CLAIMPOLICE_ZIPCODE,
+          };
+        }
+
+        // Assign police
+        if (row.CLAIMPOLICE_CLAIMID && !claims[claimId].police) {
+          claims[claimId].police = {
+            CLAIMPOLICE_ID: row.CLAIMPOLICE_ID,
+            CLAIMPOLICE_INVESTIGATIONFILENO: row.CLAIMPOLICE_INVESTIGATIONFILENO,
+            CLAIMPOLICE_DIARYNUMBER: row.CLAIMPOLICE_DIARYNUMBER,
+          };
+        }
+
+        // Assign party
+        if (row.CLAIMPARTY_CLAIMID && !claims[claimId].party) {
+          claims[claimId].party = {
+            CLAIMPARTY_ID: row.CLAIMPARTY_ID,
+            CLAIMPARTY_NAME: row.CLAIMPARTY_NAME,
+            CLAIMPARTY_EMAIL: row.CLAIMPARTY_EMAIL,
+            CLAIMPARTY_PHONENO1: row.CLAIMPARTY_PHONENO1,
+          };
+        }
+
+        // Group documents
+        if (row.CLAIMDOCUMENT_CLAIMID) {
+          claims[claimId].documents.push({
+            CLAIMDOCUMENT_ID: row.CLAIMDOCUMENT_ID,
+            CLAIMDOCUMENT_TYPE: row.CLAIMDOCUMENT_TYPE,
+            CLAIMDOCUMENT_FILE1: row.CLAIMDOCUMENT_FILE1,
+            CLAIMDOCUMENT_FILE2: row.CLAIMDOCUMENT_FILE2,
+            CLAIMDOCUMENT_FILE3: row.CLAIMDOCUMENT_FILE3,
+          });
+        }
+      });
+
+      const finalClaims = Object.values(claims);
+
+      return finalClaims
+    } catch (error: any) {
+      console.log("🚀 ~ createUser ~ error:", error)
+      throw new Error(error);
+    }
+
   }),
 
   UpdatePassword: asyncHandler(async (req: CustomRequest) => {
