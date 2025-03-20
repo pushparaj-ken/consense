@@ -22,6 +22,7 @@ import { startSchedulers } from "./schedulers/schedulers";
 
 // Fleet Routes
 import fleetUserRoutes from "./routes/fleet/user.routes"
+import fleetBookingRoutes from "./routes/fleet/booking.routes"
 
 const app = express();
 
@@ -45,7 +46,7 @@ const swaggerSpecFleet = generateSwagger('CONSENSE FLEET', '1.0.0', routesFleet)
 serveSwagger(app, swaggerSpecFleet, '/api/fleet/docs');
 
 app.use(cors({
-  origin: ['http://localhost:4000', 'https://consense.smcmtechnologies.com', 'http://consense.smcmtechnologies.com']
+  origin: ['http://localhost:4000', 'http://localhost:4200', 'https://consense.smcmtechnologies.com', 'http://consense.smcmtechnologies.com']
 }));
 
 app.use(express.json());
@@ -71,6 +72,7 @@ app.use('/api/admin/location', locationRoutes);
 
 // Fleet Routes
 app.use('/api/fleet', fleetUserRoutes);
+app.use('/api/fleet/booking', fleetBookingRoutes);
 
 startSchedulers();
 

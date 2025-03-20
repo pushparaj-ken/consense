@@ -116,6 +116,9 @@ export class VehicleReturnDetail {
   @Column({ name: 'VEHICLERETURNDETAIL_VEHICLEID', type: 'int' })
   VEHICLERETURNDETAIL_VEHICLEID: number;
 
+  @Column({ name: 'VEHICLERETURNDETAIL_BOOKINGID', type: 'int' })
+  VEHICLERETURNDETAIL_BOOKINGID: number;
+
   @Column({ name: 'VEHICLERETURNDETAIL_MILEAGE', type: 'varchar', length: 255, nullable: true })
   VEHICLERETURNDETAIL_MILEAGE?: string;
 
