@@ -175,7 +175,7 @@
 
 /**
  * @swagger
- * /api/users/refresh-token:
+ * /api/admin/refresh-token:
  *   post:
  *     summary: Refresh Token
  *     tags: [Admin]

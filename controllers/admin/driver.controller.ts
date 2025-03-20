@@ -32,7 +32,7 @@ export const driverController = {
     if (values.DRIVER_CUSTOMERID != '' && values.DRIVER_CUSTOMERID != null && values.DRIVER_CUSTOMERID != undefined) {
       query.DRIVER_CUSTOMERID = values.DRIVER_CUSTOMERID
     }
-    query.CUSTOMER_STATUS = 0
+    query.DRIVER_STATUS = 0
     const result = await driverService.getDrivers(limit, offset, query);
 
     return {
