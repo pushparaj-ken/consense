@@ -1,6 +1,61 @@
-extends layout
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title 404 - Page Not Found
+    style.
+      * {
+        margin: 17px;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #0e0e0e;
+        font-family: 'Arial', sans-serif;
+        overflow: hidden;
+      }
+      .container {
+        text-align: center;
+        color: #fff;
+      }
+      .error {
+        font-size: 10rem;
+        font-weight: bold;
+        position: relative;
+        animation: float 3s infinite ease-in-out;
+        text-shadow: 0 0 20px #00eaff, 0 0 30px #00eaff;
+      }
+      .message {
+        font-size: 1.5rem;
+        margin-top: -20px;
+      }
+      .back {
+        margin-top: 50px;
+        padding: 10px 20px;
+        border: 2px solid #00eaff;
+        color: #00eaff;
+        background: transparent;
+        text-decoration: none;
+        font-weight: bold;
+        border-radius: 30px;
+        transition: all 0.3s ease;
+      }
+      .back:hover {
+        background: #00eaff;
+        color: #0e0e0e;
+      }
+      @keyframes float {
+        0%, 100% { transform: translateY(-10px) rotateX(10deg); }
+        50% { transform: translateY(10px) rotateX(-10deg); }
+      }
 
-block content
-  h1= message
-  h2= error.status
-  pre #{error.stack}
+  body
+    .container
+      h1.error 404
+      p.message Oops! The page you're looking for doesn't exist.
+      a.back(href="/") Go Back Home

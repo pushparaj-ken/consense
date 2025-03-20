@@ -14,4 +14,6 @@ router.put("/:id", authenticateAdmin, roleController.updateRole);
 
 router.delete("/:id", authenticateAdmin, roleController.deleteRole);
 
+router.post("/assign-role", authenticateAdmin, roleController.assignRole);
+
 export default router;

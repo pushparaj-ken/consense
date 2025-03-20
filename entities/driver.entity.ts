@@ -15,6 +15,9 @@ export class Driver {
   @Column({ name: "DRIVER_USERID" })
   DRIVER_USERID: number;
 
+  @Column({ name: "DRIVER_DUPICATEID", default: 0 })
+  DRIVER_DUPICATEID: number;
+
   @ManyToOne(() => Customer)
   @JoinColumn({ name: "DRIVER_CUSTOMERID" })
   DRIVER_CUSTOMERID: Customer;
@@ -25,7 +28,7 @@ export class Driver {
   @Column({ name: "DRIVER_LASTNAME" })
   DRIVER_LASTNAME: string;
 
-  @Column({ name: "DRIVER_EMAIL", unique: true })
+  @Column({ name: "DRIVER_EMAIL" })
   DRIVER_EMAIL: string;
 
   @Column({ name: "DRIVER_PASSWORD", nullable: true })
@@ -33,6 +36,9 @@ export class Driver {
 
   @Column({ name: "DRIVER_PHONENO", nullable: true })
   DRIVER_PHONENO?: string;
+
+  @Column({ name: "DRIVER_COUNTRYCODE", nullable: true })
+  DRIVER_COUNTRYCODE?: string;
 
   @Column({ name: "DRIVER_ADDRESS1", nullable: true })
   DRIVER_ADDRESS1?: string;
@@ -95,6 +101,7 @@ export interface RegisterDriverData {
   CUSTOMER_CODE: number;
   DRIVER_USERID?: number;
   DRIVER_CUSTOMERID?: number;
+  DRIVER_PASSWORD?: string;
 }
 
 export interface VerficationCodeData {

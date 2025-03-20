@@ -19,18 +19,32 @@
  *           type: string
  *           description: The name of the role.
  *           enum:
- *              - Admin
- *              - Fleet
- *              - Driver
- *              - Customer
+ *             - Admin
+ *             - Fleet
+ *             - Driver
+ *             - Customer
  *           example: Admin
  *         ROLES_DESCRIPTION:
  *           type: string
  *           description: The role's description.
- *       example:
- *         ROLES_NAME: "Fleet"
- *         ROLES_DESCRIPTION: "Fleet"
+ *           example: Administrator role with full access.
+ * 
+ *     AssignRole:
+ *       type: object
+ *       required:
+ *         - DRIVER_ID
+ *         - ROLE_ID
+ *       properties:
+ *         DRIVER_ID:
+ *           type: number
+ *           description: The ID of the user being assigned a role.
+ *           example: 1
+ *         ROLE_ID:
+ *           type: number
+ *           description: The ID of the role being assigned.
+ *           example: 1
  */
+
 
 
 /**
@@ -119,4 +133,21 @@
  *     responses:
  *       204:
  *         description: Role deleted.
+ */
+
+/**
+ * @swagger
+ * /api/admin/roles/assign-role:
+ *   post:
+ *     summary: Assign a Role
+ *     tags: [Roles]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/AssignRole'
+ *     responses:
+ *       200:
+ *         description: Assign a Role.
  */

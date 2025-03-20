@@ -6,6 +6,7 @@ import { driverRepository } from '../../repositories/driver.repository';
 
 interface JwtPayload {
   id: string;
+  role: any;
 }
 
 const userOptions: StrategyOptions = {
@@ -25,8 +26,9 @@ const driverOptions: StrategyOptions = {
 
 passport.use("driver-login", new JwtStrategy(driverOptions, async (payload: JwtPayload, done: any) => {
   try {
-    const driver = await driverRepository.findOneBy({ DRIVER_ID: Number(payload.id) });
+    let driver: any = await driverRepository.findOneBy({ DRIVER_ID: Number(payload.id) });
     if (driver) {
+      driver.role = payload?.role;
       return done(null, driver);
     } else {
       return done(null, false, { message: "Unauthorized" });
@@ -38,8 +40,9 @@ passport.use("driver-login", new JwtStrategy(driverOptions, async (payload: JwtP
 
 passport.use("user-login", new JwtStrategy(userOptions, async (payload: JwtPayload, done: any) => {
   try {
-    const user = await driverRepository.findOneBy({ DRIVER_ID: Number(payload.id) });
+    const user: any = await driverRepository.findOneBy({ DRIVER_ID: Number(payload.id) });
     if (user) {
+      user.role = payload?.role;
       return done(null, user);
     } else {
       return done(null, false, { message: "Unauthorized" });
@@ -51,8 +54,9 @@ passport.use("user-login", new JwtStrategy(userOptions, async (payload: JwtPaylo
 
 passport.use("admin-login", new JwtStrategy(adminOptions, async (payload: JwtPayload, done: any) => {
   try {
-    const admin = await userRepository.findOneBy({ USER_ID: Number(payload.id) });
+    const admin: any = await userRepository.findOneBy({ USER_ID: Number(payload.id) });
     if (admin) {
+      admin.role = payload?.role;
       return done(null, admin);
     } else {
       return done(null, false, { message: "Unauthorized" });

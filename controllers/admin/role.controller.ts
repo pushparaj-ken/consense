@@ -2,6 +2,8 @@ import { roleService } from "../../services/role.service";
 import { asyncHandler } from '../../utils/async-handler';
 import { RoleName } from '../../libs/global/enum';
 import { CustomRequest } from '../../libs/custom-request';
+import { driverRepository } from '../../repositories/driver.repository';
+import { userRoleRepository } from '../../repositories/user-role.repository';
 
 export const roleController = {
   createRole: asyncHandler(async (req: CustomRequest) => {
@@ -42,5 +44,18 @@ export const roleController = {
     const role = await roleService.getRoleById(Number(req.params.id));
     if (!role) throw new Error("Role not found");
     return await roleService.deleteRole(Number(req.params.id));
+  }),
+
+  assignRole: asyncHandler(async (req: CustomRequest) => {
+    const value = req.body;
+    const [role, driver] = await Promise.all([
+      roleService.getRoleById(Number(value.ROLE_ID)),
+      driverRepository.findOneBy({ DRIVER_ID: value.DRIVER_ID }),
+    ]);
+
+    if (!role) throw new Error("Role not found");
+    if (!driver) throw new Error("Driver not found");
+    value.DRIVER_USERID = driver.DRIVER_USERID
+    return await roleService.assignRole(value);
   }),
 };

@@ -6,9 +6,11 @@ import cookieParser from "cookie-parser";
 import { errorHandler } from "./utils/ApiError";
 import { generateSwagger, serveSwagger } from './swagger/swagger';
 
+// Users routes
 import userRoutes from "./routes/user/user.routes";
 import vehicleRoutes from "./routes/user/vehicle.routes";
 
+// Admin Routes
 import roleRoutes from "./routes/admin/role.routes";
 import adminRoutes from "./routes/admin/admin.routes";
 import customersRoutes from "./routes/admin/customers.routes";
@@ -16,12 +18,16 @@ import driverRoutes from "./routes/admin/driver.routes";
 import vehicleAdminRoutes from "./routes/admin/vehicle.routes";
 import locationRoutes from "./routes/admin/location.routes";
 
+import { startSchedulers } from "./schedulers/schedulers";
+
+// Fleet Routes
+import fleetUserRoutes from "./routes/fleet/user.routes"
 
 const app = express();
 
 const routes = ['./swagger/user/*.ts'];
 
-const swaggerSpec = generateSwagger('CONSENSE', '1.0.0', routes);
+const swaggerSpec = generateSwagger('CONSENSE USER', '1.0.0', routes);
 
 serveSwagger(app, swaggerSpec, '/api/user/docs');
 
@@ -30,6 +36,13 @@ const routes2 = ['./swagger/admin/*.ts'];
 const swaggerSpec2 = generateSwagger('CONSENSE ADMIN', '1.0.0', routes2);
 
 serveSwagger(app, swaggerSpec2, '/api/admin/docs');
+
+
+const routesFleet = ['./swagger/fleet/*.js'];
+
+const swaggerSpecFleet = generateSwagger('CONSENSE FLEET', '1.0.0', routesFleet);
+
+serveSwagger(app, swaggerSpecFleet, '/api/fleet/docs');
 
 app.use(cors({
   origin: ['http://localhost:4000',]
@@ -55,6 +68,11 @@ app.use('/api/admin/customers', customersRoutes);
 app.use('/api/admin/driver', driverRoutes);
 app.use('/api/admin/vehicle', vehicleAdminRoutes);
 app.use('/api/admin/location', locationRoutes);
+
+// Fleet Routes
+app.use('/api/fleet', fleetUserRoutes);
+
+startSchedulers();
 
 app.use(function (req: any, res: any, next: any) {
   res.status(404);

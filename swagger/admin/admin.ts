@@ -153,8 +153,42 @@
 
 /**
  * @swagger
- * tags:
- *   name: Vehicle
- *   description: Vehicle management
+ * /api/admin/sync-customers:
+ *   get:
+ *     summary: Sync Customers
+ *     tags: [Admin]
+ *     responses:
+ *       200:
+ *         description: Success
  */
 
+/**
+ * @swagger
+ * /api/admin/sync-drivers:
+ *   get:
+ *     summary: Sync Drivers
+ *     tags: [Admin]
+ *     responses:
+ *       200:
+ *         description: Success
+ */
+
+/**
+ * @swagger
+ * /api/users/refresh-token:
+ *   post:
+ *     summary: Refresh Token
+ *     tags: [Admin]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               refreshToken:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Success
+ */
