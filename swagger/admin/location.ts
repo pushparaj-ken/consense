@@ -109,7 +109,7 @@
  */
 /**
  * @swagger
- * /api/admin/location/list:
+ * /api/admin/location:
  *   get:
  *     summary: List location
  *     tags: [Adminlocation]

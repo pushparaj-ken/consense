@@ -1,6 +1,7 @@
 import { locationService } from "../../services/location.service";
 import { asyncHandler } from '../../utils/async-handler';
 import { CustomRequest } from '../../libs/custom-request';
+import { locationRepository } from '../../repositories/location.repository';
 
 export const locationController = {
   createLocation: asyncHandler(async (req: CustomRequest) => {
@@ -14,8 +15,31 @@ export const locationController = {
     return await locationService.createLocation(createData);
   }),
 
-  getLocations: asyncHandler(async () => {
-    return await locationService.getLocations();
+  getLocations: asyncHandler(async (req: CustomRequest) => {
+    const value = req.query;
+    let conditions: string[] = [];
+
+    if (value.type) {
+      conditions.push(`LOCATION_TYPE = '${Number(value.type)}'`);
+    }
+    if (value.status) {
+      conditions.push(`LOCATION_STATUS = '${Number(value.status)}'`);
+    }
+    if (value.name) {
+      conditions.push(`LOCATION_NAME LIKE '%${value.name}%'`);
+    }
+    if (value.id) {
+      conditions.push(`LOCATION_ID = '${Number(value.id)}'`);
+    }
+    if (value.LOCATION_CUSTOMERID) {
+      conditions.push(`LOCATION_CUSTOMERID = '${Number(value.LOCATION_CUSTOMERID)}'`);
+    }
+
+    const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
+
+    const query = `SELECT * FROM CFCM_LOCATION ${whereClause}`;
+
+    return await locationRepository.query(query);
   }),
 
   getLocationById: asyncHandler(async (req: CustomRequest) => {

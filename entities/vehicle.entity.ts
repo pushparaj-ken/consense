@@ -107,7 +107,7 @@ export class VehicleDetail {
 }
 
 
-Entity('CFCM_VEHICLERETURNDETAIL')
+@Entity('CFCM_VEHICLERETURNDETAIL')
 export class VehicleReturnDetail {
 
   @PrimaryGeneratedColumn({ name: 'VEHICLERETURNDETAIL_ID' })

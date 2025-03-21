@@ -9,7 +9,7 @@ export const driverController = {
     const role = ["FLEET", "fleet", "Fleet"];
     const response = await driverService.loginDriver(value, role);
     res.set('Authentication', response.Token);
-    return response.data
+    return response
   }),
 
   Register: asyncHandler(async (req: Request, res: Response) => {

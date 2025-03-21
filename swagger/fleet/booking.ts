@@ -94,8 +94,8 @@
  *           type: string
  *           example: yes
  *         BOOKING_ID: 
- *           type: string
- *           example: "66d94c479a60b3d3c013fe5d"
+ *           type: number
+ *           example:  1
  *     BookingResponse:
  *       type: object
  *       properties:

@@ -24,6 +24,7 @@ import { startSchedulers } from "./schedulers/schedulers";
 // Fleet Routes
 import fleetUserRoutes from "./routes/fleet/user.routes"
 import fleetBookingRoutes from "./routes/fleet/booking.routes"
+import locationfleetRoutes from "./routes/fleet/location.routes"
 
 const app = express();
 
@@ -75,6 +76,8 @@ app.use('/api/admin/location', locationRoutes);
 // Fleet Routes
 app.use('/api/fleet', fleetUserRoutes);
 app.use('/api/fleet/booking', fleetBookingRoutes);
+app.use('/api/fleet/location', locationfleetRoutes);
+
 
 startSchedulers();
 
