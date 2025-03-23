@@ -69,7 +69,9 @@ export const driverController = {
 
   driverProfile: asyncHandler(async (req: CustomRequest) => {
     const driver = req.driver;
-    return await driverService.getDriverById(driver.DRIVER_ID);
+    let response: any = await driverService.getDriverById(driver.DRIVER_ID);
+    response.DRIVER_ROLE = driver.role
+    return response;
   }),
 
   UpdateDriverProfile: asyncHandler(async (req: CustomRequest) => {
