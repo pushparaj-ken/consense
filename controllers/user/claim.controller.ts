@@ -197,52 +197,52 @@ export const claimController = {
       if (values.damageNo) {
         query.CLAIM_NO = values.damageNo;
       }
-      const vehicleRecord = await vehicleRepository.findOneBy({ VEHICLE_DRIVERID: driver.DRIVER_ID });
+      const vehicleRecord = await vehicleRepository.find({ where: { VEHICLE_DRIVERID: driver.DRIVER_ID } });
 
-      if (!vehicleRecord) {
-        throw new Error("Vehicle not Found")
-      }
+
       const claims: any = [];
-      let responsejson: any = {}
-      responsejson.VEHICLE_NAME = vehicleRecord?.VEHICLE_NAME ?? "";
-      responsejson.VEHICLE_VIN = vehicleRecord?.VEHICLE_VIN ?? "";
-      responsejson.VEHICLE_ENGINENO = vehicleRecord?.VEHICLE_ENGINENO ?? "";
-      responsejson.VEHICLE_MODEL = vehicleRecord?.VEHICLE_MODEL ?? "";
-      responsejson.VEHICLE_YEAR = vehicleRecord?.VEHICLE_YEAR ?? "";
-      responsejson.VEHICLE_COLOR = vehicleRecord?.VEHICLE_COLOR ?? "";
-      responsejson.VEHICLE_TYPE = vehicleRecord?.VEHICLE_TYPE ?? "";
-      responsejson.VEHICLE_STATUS = VehicleStatus.Delivered_Customer ?? "";
-      responsejson.IMAGE = "https://paizatto.s3.ap-south-1.amazonaws.com/grafik8f29dc91-09d7-4a76-baab-6e493a7f48b8.png";
+      if (vehicleRecord.length > 0) {
+        for (let vehi of vehicleRecord) {
+          let responsejson: any = {}
+          responsejson.VEHICLE_NAME = vehi?.VEHICLE_NAME ?? "";
+          responsejson.VEHICLE_VIN = vehi?.VEHICLE_VIN ?? "";
+          responsejson.VEHICLE_ENGINENO = vehi?.VEHICLE_ENGINENO ?? "";
+          responsejson.VEHICLE_MODEL = vehi?.VEHICLE_MODEL ?? "";
+          responsejson.VEHICLE_YEAR = vehi?.VEHICLE_YEAR ?? "";
+          responsejson.VEHICLE_COLOR = vehi?.VEHICLE_COLOR ?? "";
+          responsejson.VEHICLE_TYPE = vehi?.VEHICLE_TYPE ?? "";
+          responsejson.VEHICLE_STATUS = VehicleStatus.Delivered_Customer ?? "";
+          responsejson.IMAGE = "https://paizatto.s3.ap-south-1.amazonaws.com/grafik8f29dc91-09d7-4a76-baab-6e493a7f48b8.png";
+          query.CLAIM_VEHICLEID = vehi.VEHICLE_ID;
 
-      query.CLAIM_VEHICLEID = vehicleRecord.VEHICLE_ID;
+          const claimRecord = await claimRepository.find({ where: query })
+          let subresponsejsonDetails = []
+          if (claimRecord.length > 0) {
+            for (const row of claimRecord) {
+              let subresponsejson: any = {}
+              subresponsejson.CLAIM_ID = row.CLAIM_ID;
+              subresponsejson.CLAIM_TYPE = row.CLAIM_TYPE;
+              subresponsejson.CLAIM_STAGE = row.CLAIM_STAGE;
+              subresponsejson.CLAIM_NO = row.CLAIM_NO
 
-      const claimRecord = await claimRepository.find({ where: query })
-      let subresponsejsonDetails = []
-      if (claimRecord.length > 0) {
-        for (const row of claimRecord) {
-          let subresponsejson: any = {}
-          subresponsejson.CLAIM_ID = row.CLAIM_ID;
-          subresponsejson.CLAIM_TYPE = row.CLAIM_TYPE;
-          subresponsejson.CLAIM_STAGE = row.CLAIM_STAGE;
-          subresponsejson.CLAIM_NO = row.CLAIM_NO
-
-          const claimLog = await claimLogRepository.find({ where: { CLAIMLOG_CLAIMID: row.CLAIM_ID } })
-          let childresponseDetails = []
-          if (claimLog.length > 0) {
-            for (const each of claimLog) {
-              let childresponsejson: any = {}
-              childresponsejson.REPAIR_STATUS = each.CLAIMLOG_STAGE;
-              childresponsejson.REPAIR_DATE = each.CLAIMLOG_DATE;
-              childresponseDetails.push(childresponsejson)
-            }
+              const claimLog = await claimLogRepository.find({ where: { CLAIMLOG_CLAIMID: row.CLAIM_ID } })
+              let childresponseDetails = []
+              if (claimLog.length > 0) {
+                for (const each of claimLog) {
+                  let childresponsejson: any = {}
+                  childresponsejson.REPAIR_STATUS = each.CLAIMLOG_STAGE;
+                  childresponsejson.REPAIR_DATE = each.CLAIMLOG_DATE;
+                  childresponseDetails.push(childresponsejson)
+                }
+              }
+              subresponsejson.STATUS = childresponseDetails
+              subresponsejsonDetails.push(subresponsejson)
+            };
           }
-          subresponsejson.STATUS = childresponseDetails
-          subresponsejsonDetails.push(subresponsejson)
-        };
+          responsejson.Reports = subresponsejsonDetails
+          claims.push(responsejson)
+        }
       }
-      responsejson.Reports = subresponsejsonDetails
-      claims.push(responsejson)
-
       return claims
     } catch (error: any) {
       console.log("🚀 ~ createUser ~ error:", error)
