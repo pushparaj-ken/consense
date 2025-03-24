@@ -45,16 +45,16 @@
  *           items:
  *            type: object
  *            properties:
- *              BOOKING_PASSENGERFIRSTNAME:
+ *              BOOKINGPASSENGER_FIRSTNAME:
  *                type: string
  *                example : S
- *              BOOKING_PASSENGERLASTNAME:
+ *              BOOKINGPASSENGER_LASTNAME:
  *                type: string
  *                example : lastName
- *              BOOKING_PASSENGERDEPARTMENT: 
+ *              BOOKINGPASSENGER_DEPARTMENT: 
  *                type: string
  *                example : department
- *              BOOKING_PASSENGERPROJECT: 
+ *              BOOKINGPASSENGER_PROJECT: 
  *                type: string
  *                example : project
  *         licenseDetails:
@@ -84,13 +84,13 @@
  *         BOOKING_VEHICLEID:
  *           type: number
  *           example: 2569
- *         BOOKING_VEHICLERETURNMILEAGE:
+ *         BOOKINGRETURN_VEHICLEMILEAGE:
  *           type: number
  *           example: 15
- *         BOOKING_VEHICLERETURNLOCATION:
+ *         BOOKINGRETURN_VEHICLELOCATION:
  *           type: string
  *           example: guindy
- *         BOOKING_VEHICLERETURNANYDAMAGE: 
+ *         BOOKINGRETURN_VEHICLEANYDAMAGE: 
  *           type: string
  *           example: yes
  *         BOOKING_ID: 

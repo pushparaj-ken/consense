@@ -2,12 +2,13 @@ import { Request, Response } from "express";
 import { bookingService } from "../../services/booking.services";
 import { asyncHandler } from '../../utils/async-handler';
 import { CustomRequest } from '../../libs/custom-request';
-import { bookingRepository } from '../../repositories/booking.repository';
+import { bookingPassengerRepository, bookingRepository } from '../../repositories/booking.repository';
 import { vehicleService } from '../../services/vehicle.service';
 import { vehicleRepository } from '../../repositories/vehicle.repository';
 import { AppDataSource } from '../../config/database';
 import { Booking } from '../../entities/booking.entity';
 import { VehicleReturnDetail } from '../../entities/vehicle.entity';
+import { AnyError } from 'typeorm';
 
 export const bookingController = {
 
@@ -92,10 +93,51 @@ export const bookingController = {
       query.BOOKING_ID = values.BOOKING_ID
     }
     query.BOOKING_STATUS = 0
-    const result = await bookingService.getBookings(limit, offset, query);
+    const result: any = await bookingService.getBookings(limit, offset, query);
+
+    let response: any = [];
+
+    for (let each of result.vehicle) {
+      let reponseJson: any = {}
+      reponseJson.BOOKING_ID = each.BOOKING_ID;
+      reponseJson.BOOKING_VEHICLEID = each.BOOKING_VEHICLEID;
+      reponseJson.BOOKING_STARTDATE = each.BOOKING_STARTDATE;
+      reponseJson.BOOKING_ENDDATE = each.BOOKING_ENDDATE;
+      reponseJson.BOOKING_STATUS = each.BOOKING_STATUS;
+      reponseJson.BOOKING_CREATEDBY = each.BOOKING_CREATEDBY;
+      reponseJson.BOOKING_CREATEDON = each.BOOKING_CREATEDON;
+      reponseJson.BOOKING_MODIFIEDBY = each.BOOKING_MODIFIEDBY;
+      reponseJson.BOOKING_MODIFIEDON = each.BOOKING_MODIFIEDON;
+
+      const vehicleData = await vehicleRepository.findOne({
+        where: { VEHICLE_ID: each.BOOKING_VEHICLEID },
+        relations: ["VEHICLE_CUSTOMERID"],
+      });
+
+      reponseJson.VEHICLE = {
+        COMPANY: vehicleData?.VEHICLE_CUSTOMERID.CUSTOMER_COMPANYNAME,
+        FIRSTNAME: vehicleData?.VEHICLE_CUSTOMERID.CUSTOMER_FIRSTNAME,
+        LASTNAME: vehicleData?.VEHICLE_CUSTOMERID.CUSTOMER_LASTNAME,
+        EMAIL: vehicleData?.VEHICLE_CUSTOMERID.CUSTOMER_EMAIL,
+        PHONE: vehicleData?.VEHICLE_CUSTOMERID.CUSTOMER_PHONENO,
+      };
+
+      const passengerData = await bookingPassengerRepository.find({ where: { BOOKINGPASSENGER_BOOKINGID: each.BOOKING_ID } })
+      reponseJson.PASSENGER = passengerData;
+      reponseJson.lICENSEDETAILS = {
+        BOOKING_LICENSENO: each.BOOKING_LICENSENO,
+        BOOKING_LICENSEVEHICLECLASS: each.BOOKING_LICENSEVEHICLECLASS,
+        BOOKING_LICENSEDATEOFISSUE: each.BOOKING_LICENSEDATEOFISSUE,
+        BOOKING_LICENSEEXPIRYDATE: each.BOOKING_LICENSEEXPIRYDATE,
+        BOOKING_LICENSECOUNTRYISSUE: each.BOOKING_LICENSECOUNTRYISSUE,
+        BOOKING_LICENSEPLACEOFISSUE: each.BOOKING_LICENSEPLACEOFISSUE,
+      };
+
+      response.push(reponseJson);
+    }
 
     return {
-      customers: result.customers,
+      booking: response,
       pagination: {
         totalItems: result.totalItems,
         totalPages: Math.ceil(result.totalItems / limit),
@@ -168,20 +210,21 @@ export const bookingController = {
       }
       return await AppDataSource.transaction(async (manager) => {
         const updateData = {
-          BOOKING_VEHICLERETURNMILEAGE: String(values.BOOKING_VEHICLERETURNMILEAGE),
-          BOOKING_VEHICLERETURNLOCATION: values.BOOKING_VEHICLERETURNLOCATION,
-          BOOKING_VEHICLERETURNANYDAMAGE: values.BOOKING_VEHICLERETURNANYDAMAGE,
+          BOOKINGRETURN_BOOKINGID: Number(values.BOOKING_ID),
+          BOOKINGRETURN_VEHICLEMILEAGE: String(values.BOOKINGRETURN_VEHICLEMILEAGE),
+          BOOKINGRETURN_VEHICLELOCATION: values.BOOKINGRETURN_VEHICLELOCATION,
+          BOOKINGRETURN_VEHICLEANYDAMAGE: values.BOOKINGRETURN_VEHICLEANYDAMAGE,
           BOOKING_MODIFIEDBY: driver.DRIVER_ID,
           BOOKING_MODIFIEDON: new Date()
         }
-        await manager.update(Booking, Number(values.BOOKING_ID), updateData)
+        await manager.save(updateData)
 
         const updatevehicleData = {
           VEHICLERETURNDETAIL_VEHICLEID: vehicleId,
           VEHICLERETURNDETAIL_BOOKINGID: Number(values.BOOKING_ID),
-          VEHICLERETURNDETAIL_MILEAGE: String(values.BOOKING_VEHICLERETURNMILEAGE),
-          VEHICLERETURNDETAIL_RETURNLOCATION: values.BOOKING_VEHICLERETURNLOCATION,
-          VEHICLERETURNDETAIL_ANYDAMAGE: values.BOOKING_VEHICLERETURNANYDAMAGE,
+          VEHICLERETURNDETAIL_MILEAGE: String(values.BOOKINGRETURN_VEHICLEMILEAGE),
+          VEHICLERETURNDETAIL_RETURNLOCATION: values.BOOKINGRETURN_VEHICLELOCATION,
+          VEHICLERETURNDETAIL_ANYDAMAGE: values.BOOKINGRETURN_VEHICLEANYDAMAGE,
           VEHICLERETURNDETAIL_CREATEDBY: driver.DRIVER_ID,
           VEHICLERETURNDETAIL_CREATEDON: new Date()
         }
