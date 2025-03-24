@@ -117,7 +117,7 @@ export const driverService = {
   },
 
   async registerDriver(data: Partial<RegisterDriverData>, RoleData: string[]) {
-    if (!data.DRIVER_EMAIL || !data.DRIVER_COMPANYNAME || !data.CUSTOMER_CODE) {
+    if (!data.DRIVER_EMAIL || !data.CUSTOMER_CODE) {
       throw new Error("All fields are mandatory");
     }
 
