@@ -337,7 +337,6 @@ export const adminService = {
         throw new Error('Refresh token is required')
       }
       const decoded = validRefreshToken(data.refreshToken)
-      console.log("🚀 ~ refreshTokenDriver ~ decoded:", decoded)
       if (!decoded?.exp) {
         throw new Error('Invalid requested token')
       }

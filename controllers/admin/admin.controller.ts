@@ -75,16 +75,17 @@ export const adminController = {
       whereClause += ` AND u.USER_PHONENO = '${values.USER_PHONENO}'`;
     }
 
-    whereClause += ` AND ur.USERROLE_ROLEID = '${role.ROLES_ID}'`;
+    // whereClause += ` AND ur.USERROLE_ROLEID = '${role.ROLES_ID}'`;
 
 
     const query = `
-        SELECT u.*,ur.USERROLE_ROLEID AS ROLE_ID FROM CFCM_USERS AS u
+        SELECT u.*,STRING_AGG(ur.USERROLE_ROLEID, ',') AS ROLE_ID FROM CFCM_USERS AS u
         LEFT JOIN CFCM_USERROLE AS ur ON ur.USERROLE_USERID = u.USER_ID
         ${whereClause}
         ORDER BY u.USER_ID DESC
         OFFSET ${offset} ROWS FETCH NEXT ${limit} ROWS ONLY;
     `;
+    console.log("🚀 ~ getUsers:asyncHandler ~ query:", query)
 
     const countQuery = `
         SELECT COUNT(*) AS totalItems FROM CFCM_USERS AS u
