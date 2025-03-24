@@ -82,10 +82,12 @@ export const adminController = {
         SELECT u.*,STRING_AGG(ur.USERROLE_ROLEID, ',') AS ROLE_ID FROM CFCM_USERS AS u
         LEFT JOIN CFCM_USERROLE AS ur ON ur.USERROLE_USERID = u.USER_ID
         ${whereClause}
+        GROUP BY u.USER_ID, u.USER_USERNAME, u.USER_EMAIL, u.USER_PASSWORD, 
+         u.USER_FIRSTNAME, u.USER_LASTNAME, u.USER_PHONENO, 
+         u.USER_CREATEDBY, u.USER_CREATEDON, u.USER_MODIFIEDBY, u.USER_MODIFIEDON
         ORDER BY u.USER_ID DESC
         OFFSET ${offset} ROWS FETCH NEXT ${limit} ROWS ONLY;
     `;
-    console.log("🚀 ~ getUsers:asyncHandler ~ query:", query)
 
     const countQuery = `
         SELECT COUNT(*) AS totalItems FROM CFCM_USERS AS u
