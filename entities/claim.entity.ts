@@ -366,3 +366,36 @@ export class ClaimDocument {
   @Column({ name: 'CLAIMDOCUMENT_MODIFIEDON', type: 'datetime', nullable: true })
   CLAIMDOCUMENT_MODIFIEDON?: Date;
 }
+
+@Entity({ name: 'CFCM_CLAIMLOG' })
+export class ClaimLog {
+  @PrimaryGeneratedColumn({ name: 'CLAIMLOG_ID' })
+  CLAIMLOG_ID: number;
+
+  @Column({ name: 'CLAIMLOG_CLAIMID', type: 'int' })
+  CLAIMLOG_CLAIMID: number;
+
+  @Column({ name: 'CLAIMLOG_DATE', type: 'datetime', nullable: true })
+  CLAIMLOG_DATE?: Date;
+
+  @Column({ name: 'CLAIMLOG_REPORTDATE', type: 'datetime', nullable: true })
+  CLAIMLOG_REPORTDATE?: Date;
+
+  @Column({ name: 'CLAIMLOG_STAGE', type: 'varchar', length: 255 })
+  CLAIMLOG_STAGE: string;
+
+  @Column({ name: 'CLAIMLOG_STATUS', type: 'int', default: 0 })
+  CLAIMLOG_STATUS: number;
+
+  @Column({ name: 'CLAIMLOG_CREATEDBY', type: 'int', nullable: true })
+  CLAIMLOG_CREATEDBY?: number;
+
+  @Column({ name: 'CLAIMLOG_CREATEDON', type: 'datetime', nullable: true })
+  CLAIMLOG_CREATEDON?: Date;
+
+  @Column({ name: 'CLAIMLOG_MODIFIEDBY', type: 'int', nullable: true })
+  CLAIMLOG_MODIFIEDBY?: number;
+
+  @Column({ name: 'CLAIMLOG_MODIFIEDON', type: 'datetime', nullable: true })
+  CLAIMLOG_MODIFIEDON?: Date;
+}

@@ -3,6 +3,7 @@ import { vehicleService } from "../../services/vehicle.service";
 import { asyncHandler } from '../../utils/async-handler';
 import { CustomRequest } from '../../libs/custom-request';
 import { claimService } from '../../services/claim.services';
+import { VehicleStatus } from '../../libs/global/enum';
 
 export const vehicleController = {
   getVehicles: asyncHandler(async (req: CustomRequest) => {
@@ -23,11 +24,7 @@ export const vehicleController = {
 
     for (let each of result.vehicle) {
       let responsejson: any = { ...each };
-
-      const claim = await claimService.getClaim({ CLAIM_VEHICLEID: each.VEHICLE_ID, CLAIM_DRIVERID: driver.DRIVER_ID }
-      );
-
-      responsejson.CLAIM_STATUS = claim ? claim.CLAIM_STAGE : "No Claim Found";
+      responsejson.CLAIM_STATUS = VehicleStatus.Delivered_Customer;
       responsejson.CLAIM_IMAGE = "https://paizatto.s3.ap-south-1.amazonaws.com/grafik8f29dc91-09d7-4a76-baab-6e493a7f48b8.png";
       response.push(responsejson);
     }

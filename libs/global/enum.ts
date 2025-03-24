@@ -13,3 +13,8 @@ export enum DamageStatus {
   Submission_to_VR = "Einreichung_bei_VR",
   Accounting = "Buchhaltung",
 }
+
+export enum VehicleStatus {
+  Delivered_Customer = "Ausgeliefert_Kunde",
+  Other = "Sonstiges",
+}
