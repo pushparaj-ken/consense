@@ -365,6 +365,7 @@ export const driverService = {
         throw new Error('Refresh token is required')
       }
       const decoded = validRefreshToken(data.refreshToken)
+      console.log("🚀 ~ refreshTokenDriver ~ decoded:", decoded)
       if (!decoded?.exp) {
         throw new Error('Invalid requested token')
       }
@@ -372,12 +373,12 @@ export const driverService = {
       const timeNow = Math.floor(Date.now() / 1000);
       const isTokenExpired = decoded.exp < timeNow;
       if (isTokenExpired) {
-        const driver = await driverRepository.findOneBy({ DRIVER_ID: decoded?.DRIVER_ID });
+        const driver = await driverRepository.findOneBy({ DRIVER_ID: decoded?.id });
 
         if (!driver) throw new Error('Invalid driver');
 
         const role = await roleRepository.findOneBy({
-          ROLES_NAME: In(["DRIVER", "driver", "Driver"]),
+          ROLES_NAME: In(["DRIVER", "driver", "Driver", "FLEET", "Fleet", "fleet", "CUSTOMER", "customer", "Customer", "ADMIN", "admin", "ADMIN"]),
         });
 
         if (!role) {

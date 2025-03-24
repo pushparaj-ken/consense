@@ -28,6 +28,7 @@ export const vehicleController = {
       );
 
       responsejson.CLAIM_STATUS = claim ? claim.CLAIM_STAGE : "No Claim Found";
+      responsejson.CLAIM_IMAGE = "https://paizatto.s3.ap-south-1.amazonaws.com/grafik8f29dc91-09d7-4a76-baab-6e493a7f48b8.png";
       response.push(responsejson);
     }
 

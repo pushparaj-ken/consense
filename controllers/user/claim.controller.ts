@@ -6,6 +6,8 @@ import { AppDataSource } from '../../config/database';
 import { Claim, ClaimDocument, ClaimParking, ClaimParts, ClaimParty, ClaimPolice } from '../../entities/claim.entity';
 import { vehicleService } from '../../services/vehicle.service';
 import { claimRepository } from '../../repositories/claim.repository';
+import { vehicleRepository } from '../../repositories/vehicle.repository';
+import { response } from 'express';
 
 export const claimController = {
   createClaim: asyncHandler(async (req: CustomRequest) => {
@@ -195,76 +197,87 @@ export const claimController = {
       LEFT JOIN CFCM_CLAIMDOCUMENT AS cd ON cd.CLAIMDOCUMENT_CLAIMID = c.CLAIM_ID
       WHERE c.CLAIM_DRIVERID = ${driver.DRIVER_ID} ${query}
     `);
-      const claims: any = {};
+      const claims: any = [];
 
-      rawResult.forEach((row: any) => {
+      for (const row of rawResult) {
         const claimId = row.CLAIM_ID;
+        const vehicle = await vehicleRepository.findOneBy({ VEHICLE_ID: row.CLAIM_VEHICLEID })
 
-        if (!claims[claimId]) {
-          claims[claimId] = {
-            CLAIM_ID: row.CLAIM_ID,
-            CLAIM_NO: row.CLAIM_NO,
-            CLAIM_TYPE: row.CLAIM_TYPE,
-            CLAIM_DATE: row.CLAIM_DATE,
-            CLAIM_STAGE: row.CLAIM_STAGE,
-            parts: [],
-            parking: null,
-            police: null,
-            party: null,
-            documents: []
-          };
+        const response: any = {
+          CLAIM_ID: row.CLAIM_ID,
+          CLAIM_NO: row.CLAIM_NO,
+          CLAIM_TYPE: row.CLAIM_TYPE,
+          CLAIM_DATE: row.CLAIM_DATE,
+          CLAIM_STAGE: row.CLAIM_STAGE,
+          CLAIM_VEHICLEID: row.CLAIM_VEHICLEID,
+          CLAIM_DRIVERID: row.CLAIM_DRIVERID,
+          CLAIM_CUSTOMERID: row.CLAIM_CUSTOMERID,
+          CLAIM_IMAGE: "https://paizatto.s3.ap-south-1.amazonaws.com/grafik8f29dc91-09d7-4a76-baab-6e493a7f48b8.png",
+          VEHICLE_NAME: vehicle?.VEHICLE_NAME ?? "",
+          VEHICLE_VIN: vehicle?.VEHICLE_VIN ?? "",
+          VEHICLE_ENGINENO: vehicle?.VEHICLE_ENGINENO ?? "",
+          VEHICLE_MODEL: vehicle?.VEHICLE_MODEL ?? "",
+          VEHICLE_YEAR: vehicle?.VEHICLE_YEAR ?? "",
+          VEHICLE_COLOR: vehicle?.VEHICLE_COLOR ?? "",
+          VEHICLE_TYPE: vehicle?.VEHICLE_TYPE ?? "",
+          // parts: [],
+          // parking: null,
+          // police: null,
+          // party: null,
+          // documents: []
         }
 
+        claims.push(response)
         // Group parts
-        if (row.CLAIMPARTS_CLAIMID) {
-          claims[claimId].parts = {
-            CLAIMPARTS_CLAIMID: row.CLAIMPARTS_CLAIMID,
-            CLAIMPARTS_TIREFRONTLEFT: row.CLAIMPARTS_TIREFRONTLEFT,
-            CLAIMPARTS_BUMPERFRONTLEFT: row.CLAIMPARTS_BUMPERFRONTLEFT,
-            // Add other parts columns as needed
-          };
-        }
+        // if (row.CLAIMPARTS_CLAIMID) {
+        //   claims[claimId].parts = {
+        //     CLAIMPARTS_CLAIMID: row.CLAIMPARTS_CLAIMID,
+        //     CLAIMPARTS_TIREFRONTLEFT: row.CLAIMPARTS_TIREFRONTLEFT,
+        //     CLAIMPARTS_BUMPERFRONTLEFT: row.CLAIMPARTS_BUMPERFRONTLEFT,
+        //     // Add other parts columns as needed
+        //   };
+        // }
 
-        // Assign parking
-        if (row.CLAIMPARKING_CLAIMID && !claims[claimId].parking) {
-          claims[claimId].parking = {
-            CLAIMPARKING_ID: row.CLAIMPARKING_ID,
-            CLAIMPARKING_CLAIMID: row.CLAIMPARKING_CLAIMID,
-            CLAIMPOLICE_ADDRESS1: row.CLAIMPOLICE_ADDRESS1,
-            CLAIMPOLICE_ZIPCODE: row.CLAIMPOLICE_ZIPCODE,
-          };
-        }
+        // // Assign parking
+        // if (row.CLAIMPARKING_CLAIMID && !claims[claimId].parking) {
+        //   claims[claimId].parking = {
+        //     CLAIMPARKING_ID: row.CLAIMPARKING_ID,
+        //     CLAIMPARKING_CLAIMID: row.CLAIMPARKING_CLAIMID,
+        //     CLAIMPOLICE_ADDRESS1: row.CLAIMPOLICE_ADDRESS1,
+        //     CLAIMPOLICE_ZIPCODE: row.CLAIMPOLICE_ZIPCODE,
+        //   };
+        // }
 
-        // Assign police
-        if (row.CLAIMPOLICE_CLAIMID && !claims[claimId].police) {
-          claims[claimId].police = {
-            CLAIMPOLICE_ID: row.CLAIMPOLICE_ID,
-            CLAIMPOLICE_INVESTIGATIONFILENO: row.CLAIMPOLICE_INVESTIGATIONFILENO,
-            CLAIMPOLICE_DIARYNUMBER: row.CLAIMPOLICE_DIARYNUMBER,
-          };
-        }
+        // // Assign police
+        // if (row.CLAIMPOLICE_CLAIMID && !claims[claimId].police) {
+        //   claims[claimId].police = {
+        //     CLAIMPOLICE_ID: row.CLAIMPOLICE_ID,
+        //     CLAIMPOLICE_INVESTIGATIONFILENO: row.CLAIMPOLICE_INVESTIGATIONFILENO,
+        //     CLAIMPOLICE_DIARYNUMBER: row.CLAIMPOLICE_DIARYNUMBER,
+        //   };
+        // }
 
-        // Assign party
-        if (row.CLAIMPARTY_CLAIMID && !claims[claimId].party) {
-          claims[claimId].party = {
-            CLAIMPARTY_ID: row.CLAIMPARTY_ID,
-            CLAIMPARTY_NAME: row.CLAIMPARTY_NAME,
-            CLAIMPARTY_EMAIL: row.CLAIMPARTY_EMAIL,
-            CLAIMPARTY_PHONENO1: row.CLAIMPARTY_PHONENO1,
-          };
-        }
+        // // Assign party
+        // if (row.CLAIMPARTY_CLAIMID && !claims[claimId].party) {
+        //   claims[claimId].party = {
+        //     CLAIMPARTY_ID: row.CLAIMPARTY_ID,
+        //     CLAIMPARTY_NAME: row.CLAIMPARTY_NAME,
+        //     CLAIMPARTY_EMAIL: row.CLAIMPARTY_EMAIL,
+        //     CLAIMPARTY_PHONENO1: row.CLAIMPARTY_PHONENO1,
+        //   };
+        // }
 
-        // Group documents
-        if (row.CLAIMDOCUMENT_CLAIMID) {
-          claims[claimId].documents.push({
-            CLAIMDOCUMENT_ID: row.CLAIMDOCUMENT_ID,
-            CLAIMDOCUMENT_TYPE: row.CLAIMDOCUMENT_TYPE,
-            CLAIMDOCUMENT_FILE1: row.CLAIMDOCUMENT_FILE1,
-            CLAIMDOCUMENT_FILE2: row.CLAIMDOCUMENT_FILE2,
-            CLAIMDOCUMENT_FILE3: row.CLAIMDOCUMENT_FILE3,
-          });
-        }
-      });
+        // // Group documents
+        // if (row.CLAIMDOCUMENT_CLAIMID) {
+        //   claims[claimId].documents.push({
+        //     CLAIMDOCUMENT_ID: row.CLAIMDOCUMENT_ID,
+        //     CLAIMDOCUMENT_TYPE: row.CLAIMDOCUMENT_TYPE,
+        //     CLAIMDOCUMENT_FILE1: row.CLAIMDOCUMENT_FILE1,
+        //     CLAIMDOCUMENT_FILE2: row.CLAIMDOCUMENT_FILE2,
+        //     CLAIMDOCUMENT_FILE3: row.CLAIMDOCUMENT_FILE3,
+        //   });
+        // }
+      };
 
       const finalClaims = Object.values(claims);
 

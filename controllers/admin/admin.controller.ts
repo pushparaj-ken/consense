@@ -79,7 +79,7 @@ export const adminController = {
 
 
     const query = `
-        SELECT u.* FROM CFCM_USERS AS u
+        SELECT u.*,ur.USERROLE_ROLEID AS ROLE_ID FROM CFCM_USERS AS u
         LEFT JOIN CFCM_USERROLE AS ur ON ur.USERROLE_USERID = u.USER_ID
         ${whereClause}
         ORDER BY u.USER_ID DESC

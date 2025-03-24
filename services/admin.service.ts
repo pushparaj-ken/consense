@@ -129,6 +129,20 @@ export const adminService = {
   },
 
   async deleteUser(id: number) {
+    const userRoles = await userRoleRepository.find({
+      where: { USERROLE_USERID: id },
+      relations: ["ROLE"],
+    });
+    const adminRoles = userRoles
+      .filter(role => role.ROLE && ["ADMIN", "admin", "Admin"].includes(role.ROLE.ROLES_NAME))
+      .map(role => role.ROLE.ROLES_ID);
+
+    if (adminRoles.length > 0) {
+      await userRoleRepository.delete({
+        USERROLE_USERID: id,
+        USERROLE_ROLEID: In(adminRoles),
+      });
+    }
     return await userRepository.delete(id);
   },
 
@@ -323,6 +337,7 @@ export const adminService = {
         throw new Error('Refresh token is required')
       }
       const decoded = validRefreshToken(data.refreshToken)
+      console.log("🚀 ~ refreshTokenDriver ~ decoded:", decoded)
       if (!decoded?.exp) {
         throw new Error('Invalid requested token')
       }
@@ -330,7 +345,7 @@ export const adminService = {
       const timeNow = Math.floor(Date.now() / 1000);
       const isTokenExpired = decoded.exp < timeNow;
       if (isTokenExpired) {
-        const user = await userRepository.findOneBy({ USER_ID: decoded.USER_ID })
+        const user = await userRepository.findOneBy({ USER_ID: decoded.id })
         if (!user) throw new Error('Invalid driver');
 
         const role = await roleRepository.findOneBy({
