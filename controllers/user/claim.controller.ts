@@ -206,6 +206,7 @@ export const claimController = {
             CLAIM_NO: row.CLAIM_NO,
             CLAIM_TYPE: row.CLAIM_TYPE,
             CLAIM_DATE: row.CLAIM_DATE,
+            CLAIM_STAGE: row.CLAIM_STAGE,
             parts: [],
             parking: null,
             police: null,

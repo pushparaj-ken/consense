@@ -1,13 +1,11 @@
 import { Request } from "express";
 import bcrypt from 'bcrypt';
 import { adminService } from "../../services/admin.service";
-import { roleService } from "../../services/role.service";
 import { asyncHandler } from '../../utils/async-handler';
 import { userService } from '../../services/user.service';
 import { CustomRequest } from '../../libs/custom-request';
 import { customerRepository } from '../../repositories/customer.repository';
 import { driverRepository } from '../../repositories/driver.repository';
-import { startSchedulers } from "../../schedulers/schedulers";
 import { roleRepository } from '../../repositories/role.repository';
 import { In } from 'typeorm';
 import { userRepository } from '../../repositories/user.repository';
@@ -17,10 +15,20 @@ export const adminController = {
 
   Register: asyncHandler(async (req: Request) => {
     const value = req.body;
-    const role = await roleService.getRoleById(value.ROLE_ID)
-    if (!role) {
-      throw new Error("Role not found");
+    const existingRoles = await roleRepository.find({
+      where: {
+        ROLES_ID: In(value.ROLE_ID)
+      }
+    });
+    const existingRoleIDs = existingRoles.map(role => role.ROLES_ID);
+
+
+    const missingRoles = value.ROLE_ID.filter((id: number) => !existingRoleIDs.includes(id));
+
+    if (missingRoles.length > 0) {
+      throw new Error(`The following roles do not exist: ${missingRoles.join(", ")}`);
     }
+
     const user = await userService.getUserByEmail(value.USER_EMAIL, value.ROLE_ID)
     if (user.length > 0) {
       throw new Error("Email Already Exists");
@@ -107,7 +115,9 @@ export const adminController = {
   updateUser: asyncHandler(async (req: CustomRequest) => {
     const value = req.body;
     const admin = req.admin;
-    value.USER_PASSWORD != '' ? await bcrypt.hash(value.USER_PASSWORD, 10) : ''
+    if (value.USER_PASSWORD) {
+      value.USER_PASSWORD = await bcrypt.hash(value.USER_PASSWORD, 10)
+    }
     const updateData = {
       ...value,
       USER_MODIFIEDBY: admin.USER_ID,

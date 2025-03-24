@@ -49,5 +49,15 @@ export interface RegisterUserData {
   USER_FIRSTNAME?: string;
   USER_LASTNAME?: string;
   USER_PHONENO?: string;
-  ROLE_ID?: number;
+  ROLE_ID?: number[];
+  CUSTOMER_ID?: number
+}
+
+export interface UpdateUserData {
+  USER_EMAIL: string;
+  USER_PASSWORD: string;
+  USER_FIRSTNAME?: string;
+  USER_LASTNAME?: string;
+  USER_PHONENO?: string;
+  ROLE_ID?: number[];
 }

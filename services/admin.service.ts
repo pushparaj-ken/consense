@@ -1,5 +1,5 @@
 
-import { RegisterUserData, User } from '../entities/user.entity';
+import { RegisterUserData, UpdateUserData, User } from '../entities/user.entity';
 import { UserRole } from '../entities/user-role.entity';
 import { generateAdminToken, validRefreshToken } from "../libs/auth";
 import { SendEmail } from "../libs/email";
@@ -13,6 +13,7 @@ import { roleRepository } from '../repositories/role.repository';
 import { kundenService } from '../schedulers/service/kunden-dest.service';
 import { In } from 'typeorm';
 import { driverRepository } from '../repositories/driver.repository';
+import { RoleName } from '../libs/global/enum';
 
 export const adminService = {
   async createUser(data: Partial<RegisterUserData>) {
@@ -28,11 +29,13 @@ export const adminService = {
           USER_PHONENO: String(data.USER_PHONENO),
         }
         let user: any = await manager.save(User, userData);
-        const userRole = manager.create(UserRole, {
-          USERROLE_USERID: user.USER_ID,
-          USERROLE_ROLEID: data.ROLE_ID
-        });
-        await manager.save(UserRole, userRole);
+        for (const each of data.ROLE_ID || []) {
+          const userRole = {
+            USERROLE_USERID: user.USER_ID,
+            USERROLE_ROLEID: each
+          };
+          await manager.save(UserRole, userRole);
+        }
 
         const userRoles = await manager.find(UserRole, {
           where: { USERROLE_USERID: user.USER_ID },
@@ -40,6 +43,31 @@ export const adminService = {
         });
 
         const roleNames = userRoles.map((role) => role.ROLE?.ROLES_NAME);
+        if (roleNames.includes(RoleName.DRIVER) || roleNames.includes(RoleName.FLEET)) {
+          const driverData = {
+            DRIVER_USERID: user.USER_ID,
+            DRIVER_CUSTOMERID: { CUSTOMER_ID: data.CUSTOMER_ID },
+            DRIVER_FIRSTNAME: data.USER_FIRSTNAME,
+            DRIVER_LASTNAME: data.USER_LASTNAME,
+            DRIVER_PHONENO: String(data.USER_PHONENO),
+            DRIVER_EMAIL: data.USER_EMAIL,
+            DRIVER_PASSWORD: hashedPassword,
+          }
+          return await driverRepository.save(driverData);
+        }
+
+        if (roleNames.includes(RoleName.CUSTOMER)) {
+          const customerData = {
+            CUSTOMER_USERID: user.USER_ID,
+            CUSTOMER_CODE: Math.floor(10000000 + Math.random() * 90000000),
+            CUSTOMER_FIRSTNAME: data.USER_FIRSTNAME,
+            CUSTOMER_LASTNAME: data.USER_LASTNAME,
+            CUSTOMER_PHONENO: String(data.USER_PHONENO),
+            CUSTOMER_EMAIL: data.USER_EMAIL,
+            CUSTOMER_PASSWORD: hashedPassword,
+          }
+          return await customerRepository.save(customerData);
+        }
 
         const tokenRecord = generateAdminToken(user.USER_ID, roleNames)
         user.DRIVER_ROLE = roleNames
@@ -68,7 +96,34 @@ export const adminService = {
     return await userRepository.findOneBy({ USER_ID });
   },
 
-  async updateUser(USER_ID: number, data: Partial<User>) {
+  async updateUser(USER_ID: number, data: Partial<UpdateUserData>) {
+    if (data.ROLE_ID && Array.isArray(data.ROLE_ID)) {
+      const existingRoles = await userRoleRepository.find({
+        where: { USERROLE_USERID: USER_ID }
+      });
+
+      const existingRoleIDs = existingRoles.map(role => role.USERROLE_ROLEID);
+
+      const rolesToDelete = existingRoleIDs.filter(role => !data.ROLE_ID?.includes(role));
+
+      const rolesToAdd = data.ROLE_ID.filter(role => !existingRoleIDs.includes(role));
+
+      if (rolesToDelete.length > 0) {
+        await userRoleRepository.delete({
+          USERROLE_USERID: USER_ID,
+          USERROLE_ROLEID: In(rolesToDelete)
+        });
+      }
+      for (const each of rolesToAdd) {
+        const newUserRole = {
+          USERROLE_USERID: USER_ID,
+          USERROLE_ROLEID: each
+        };
+        await userRoleRepository.save(newUserRole);
+      }
+    }
+    delete data.ROLE_ID;
+    data.USER_PHONENO = String(data.USER_PHONENO)
     await userRepository.update(USER_ID, data);
     return await userRepository.findOneBy({ USER_ID });
   },

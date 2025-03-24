@@ -78,20 +78,28 @@ export const driverService = {
     }
     const customer = await customerRepository.findOneBy({ CUSTOMER_CODE: data.CUSTOMER_CODE })
     if (!customer) {
-      throw new Error("Customer Code not Exists");
+      const error = new Error("Customer Code not Exists") as any;
+      error.status = 203;
+      throw error;
     }
     const driver: any = await driverRepository.findOneBy({ DRIVER_EMAIL: data.DRIVER_EMAIL })
     if (!driver) {
-      throw new Error("Driver not Found")
+      const error = new Error("Driver not Found") as any;
+      error.status = 202;
+      throw error;
     }
 
     if (!driver.DRIVER_EMAILVERFIED) {
-      throw new Error("Email not Verified");
+      const error = new Error("Email not Verified") as any;
+      error.status = 210;
+      throw error;
     }
 
     const isPasswordMatched = await bcrypt.compare(data.DRIVER_PASSWORD, driver.DRIVER_PASSWORD);
     if (!isPasswordMatched) {
-      throw new Error("Password mismatch !!")
+      const error = new Error("Password mismatch !!") as any;
+      error.status = 201;
+      throw error;
     }
 
     const { DRIVER_PASSWORD, ...userWithoutPassword } = driver;

@@ -11,7 +11,7 @@ export const asyncHandler = (fn: Function) =>
       }
     } catch (error: any) {
       if (!res.headersSent) {
-        res.status(500).json(ApiResponse.fail(error.message));
+        res.status(error.status ?? 500).json(ApiResponse.fail(error.message));
       }
     }
   };

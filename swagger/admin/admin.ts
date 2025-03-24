@@ -47,6 +47,11 @@
  *           type: number
  *           example: 9876543210
  *         ROLE_ID:
+ *           type: array
+ *           items:
+ *              type:number
+ *           example: [1, 2]
+ *         CUSTOMER_ID:
  *           type: number
  *           example: 1
  *     AdminUpdateBody:
@@ -66,8 +71,16 @@
  *           type: string
  *           example: 123456
  *         USER_PHONENO:
- *           type: number
+ *           type: string
  *           example: 9876543210
+ *         ROLE_ID:
+ *           type: array
+ *           items:
+ *              type:number
+ *           example: [1, 2]
+ *         CUSTOMER_ID:
+ *           type: number
+ *           example: 1
  *     AdminResponse:
  *       type: object
  *       properties:

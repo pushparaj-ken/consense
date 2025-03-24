@@ -1,4 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { DamageStatus } from '../libs/global/enum';
 
 @Entity({ name: 'CFCM_CLAIM' })
 export class Claim {
@@ -52,6 +53,9 @@ export class Claim {
 
   @Column({ name: 'CLAIM_DRIVERID', type: 'int', nullable: true })
   CLAIM_DRIVERID?: number;
+
+  @Column({ name: 'CLAIM_STAGE', type: 'varchar', length: 255, default: DamageStatus.Report_generated })
+  CLAIM_STAGE?: string;
 
   @Column({ name: 'CLAIM_STATUS', type: 'int', default: 0 })
   CLAIM_STATUS: number;

@@ -63,6 +63,7 @@ app.set('view engine', 'pug');
 // Users routes
 app.use('/api/users', userRoutes);
 app.use('/api/users/vehicle', vehicleRoutes);
+app.use('/api/users/cars', vehicleRoutes);
 app.use('/api/users/damage', claimRoutes);
 
 // Admin Routes

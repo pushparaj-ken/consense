@@ -6,4 +6,7 @@ const router = express.Router();
 
 router.get('/list', authenticateDriver, vehicleController.getVehicles)
 
+router.post('/carkmstand', authenticateDriver, vehicleController.kiloMeter)
+
+
 export default router;
