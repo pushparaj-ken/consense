@@ -204,6 +204,7 @@ export const claimController = {
       if (vehicleRecord.length > 0) {
         for (let vehi of vehicleRecord) {
           let responsejson: any = {}
+          responsejson.VEHICLE_ID = vehi?.VEHICLE_ID ?? "";
           responsejson.VEHICLE_NAME = vehi?.VEHICLE_NAME ?? "";
           responsejson.VEHICLE_VIN = vehi?.VEHICLE_VIN ?? "";
           responsejson.VEHICLE_ENGINENO = vehi?.VEHICLE_ENGINENO ?? "";

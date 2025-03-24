@@ -15,6 +15,10 @@ export const locationController = {
       query = `AND LOCATION_TYPE = '${Number(value.LOCATION_TYPE)}'`;
     }
 
+    if (value.LOCATION_NAME) {
+      query = `AND LOCATION_NAME LIKE '%${value.LOCATION_NAME}%'`;
+    }
+
     const result = await locationRepository.query(`SELECT * FROM CFCM_LOCATION WHERE LOCATION_STATUS=0 AND LOCATION_CUSTOMERID = ${driver.DRIVER_CUSTOMERID.CUSTOMER_ID} ${query}`);
 
     return result;
