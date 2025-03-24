@@ -138,6 +138,12 @@
  *           type: string
  *         required: false
  *         description: type
+ *       - in: query
+ *         name: LOCATION_CUSTOMERID
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: LOCATION_CUSTOMERID
  *     responses:
  *       200:
  *         description: Success
