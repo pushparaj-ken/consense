@@ -82,7 +82,7 @@ export const driverService = {
       error.status = 203;
       throw error;
     }
-    const driver: any = await driverRepository.findOneBy({ DRIVER_EMAIL: data.DRIVER_EMAIL })
+    const driver: any = await driverRepository.findOneBy({ DRIVER_EMAIL: data.DRIVER_EMAIL, DRIVER_STATUS: 0 })
     if (!driver) {
       const error = new Error("Driver not Found") as any;
       error.status = 202;
@@ -131,6 +131,7 @@ export const driverService = {
 
     let existingDriver: any = await driverRepository.findOneBy({
       DRIVER_EMAIL: data.DRIVER_EMAIL,
+      DRIVER_STATUS: 0
     });
     const hashedPassword = data.DRIVER_PASSWORD ? await bcrypt.hash(data.DRIVER_PASSWORD, 10) : '';
     let user = await userRepository.findOneBy({
@@ -279,7 +280,7 @@ export const driverService = {
   async sendEmail(data: any) {
     const generateOTP = Math.floor(100000 + Math.random() * 900000);
     try {
-      const driver = await driverRepository.findOneBy({ DRIVER_EMAIL: data.email });
+      const driver = await driverRepository.findOneBy({ DRIVER_EMAIL: data.email, DRIVER_STATUS: 0 });
       if (!driver) {
         throw new Error('Driver Not Found')
       }
@@ -298,7 +299,7 @@ export const driverService = {
 
   async verifyEmail(data: any) {
     try {
-      const driver = await driverRepository.findOneBy({ DRIVER_EMAIL: data.email });
+      const driver = await driverRepository.findOneBy({ DRIVER_EMAIL: data.email, DRIVER_STATUS: 0 });
       if (!driver) {
         throw new Error('Customer Not Found')
       }
@@ -317,7 +318,7 @@ export const driverService = {
 
   async forgotPasswordDriver(data: Partial<ForgetPasswordDriverData>) {
     try {
-      const driver = await driverRepository.findOneBy({ DRIVER_EMAIL: data.DRIVER_EMAIL });
+      const driver = await driverRepository.findOneBy({ DRIVER_EMAIL: data.DRIVER_EMAIL, DRIVER_STATUS: 0 });
       if (!driver) {
         throw new Error('Driver Not Found')
       }
