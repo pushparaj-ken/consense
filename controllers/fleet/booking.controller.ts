@@ -122,6 +122,13 @@ export const bookingController = {
         PHONE: vehicleData?.VEHICLE_CUSTOMERID.CUSTOMER_PHONENO,
       };
 
+      reponseJson.GENERALINFORMATION = {
+        BOOKING_COSTCENTER: each.BOOKING_COSTCENTER,
+        BOOKING_TRAVELREASON: each.BOOKING_TRAVELREASON,
+        BOOKING_DEPARTMENT: each.BOOKING_DEPARTMENT,
+        BOOKING_PROJECT: each.BOOKING_PROJECT,
+      };
+
       const passengerData = await bookingPassengerRepository.find({ where: { BOOKINGPASSENGER_BOOKINGID: each.BOOKING_ID } })
       reponseJson.PASSENGER = passengerData;
       reponseJson.lICENSEDETAILS = {
