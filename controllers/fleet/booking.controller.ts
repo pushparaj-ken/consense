@@ -114,7 +114,7 @@ export const bookingController = {
         relations: ["VEHICLE_DRIVERID"],
       });
 
-      reponseJson.VEHICLE = {
+      reponseJson.DRIVER = {
         COMPANY: vehicleData?.VEHICLE_DRIVERID.DRIVER_COMPANYNAME,
         FIRSTNAME: vehicleData?.VEHICLE_DRIVERID.DRIVER_FIRSTNAME,
         LASTNAME: vehicleData?.VEHICLE_DRIVERID.DRIVER_LASTNAME,
