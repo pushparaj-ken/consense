@@ -132,7 +132,7 @@ export const bookingController = {
         BOOKING_LICENSECOUNTRYISSUE: each.BOOKING_LICENSECOUNTRYISSUE,
         BOOKING_LICENSEPLACEOFISSUE: each.BOOKING_LICENSEPLACEOFISSUE,
       };
-
+      reponseJson.VEHICLE_NUMBER = vehicleData?.VEHICLE_MAKE;
       response.push(reponseJson);
     }
 
