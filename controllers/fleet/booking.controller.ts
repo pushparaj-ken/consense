@@ -111,15 +111,15 @@ export const bookingController = {
 
       const vehicleData = await vehicleRepository.findOne({
         where: { VEHICLE_ID: each.BOOKING_VEHICLEID },
-        relations: ["VEHICLE_CUSTOMERID"],
+        relations: ["VEHICLE_DRIVERID"],
       });
 
       reponseJson.VEHICLE = {
-        COMPANY: vehicleData?.VEHICLE_CUSTOMERID.CUSTOMER_COMPANYNAME,
-        FIRSTNAME: vehicleData?.VEHICLE_CUSTOMERID.CUSTOMER_FIRSTNAME,
-        LASTNAME: vehicleData?.VEHICLE_CUSTOMERID.CUSTOMER_LASTNAME,
-        EMAIL: vehicleData?.VEHICLE_CUSTOMERID.CUSTOMER_EMAIL,
-        PHONE: vehicleData?.VEHICLE_CUSTOMERID.CUSTOMER_PHONENO,
+        COMPANY: vehicleData?.VEHICLE_DRIVERID.DRIVER_COMPANYNAME,
+        FIRSTNAME: vehicleData?.VEHICLE_DRIVERID.DRIVER_FIRSTNAME,
+        LASTNAME: vehicleData?.VEHICLE_DRIVERID.DRIVER_LASTNAME,
+        EMAIL: vehicleData?.VEHICLE_DRIVERID.DRIVER_EMAIL,
+        PHONE: vehicleData?.VEHICLE_DRIVERID.DRIVER_PHONENO,
       };
 
       reponseJson.GENERALINFORMATION = {
