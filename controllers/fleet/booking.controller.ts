@@ -184,8 +184,9 @@ export const bookingController = {
     if (vehicleIds.length > 0) {
       query = `AND VEHICLE_ID NOT IN (${vehicleIds})`
     }
+    const icon = "https://consense.s3.us-east-1.amazonaws.com/common_image/WhatsApp%20Image%202024-08-20%20at%206e4634a3b-a1b7-422c-8aaf-f95fa8db4f2c.34.15%20PM.jpeg";
 
-    const vehicle = await vehicleRepository.query(`SELECT * FROM CFCM_VEHICLE WHERE VEHICLE_STATUS = 0 ${query}`);
+    const vehicle = await vehicleRepository.query(`SELECT *, '${icon}' AS VEHICLE_ICON FROM CFCM_VEHICLE WHERE VEHICLE_STATUS = 0 ${query}`);
 
     return vehicle;
   }),
